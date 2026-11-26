@@ -1,9 +1,10 @@
-﻿//Suñiga Maciel Joule Alexander 
-//Villa Olivares Ariel 
-//Nuñes Martinez Marco Antonio 
-//Equipo 2 
-//============================= 
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
+using System.IO;
 using SistemaBiblioteca1.Datos;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +33,10 @@ namespace SistemaBiblioteca1.Models
         private string motivoBaneo;
         private RolUsuario rol;
         private string contrasenaHash;
+        private string rutaImagen;
 
         private const int LIMITE_SANCIONES_BANEO = 5;
+        private const int LONGITUD_MAXIMA_ID_UNIVERSITARIO = 9;
         private const int LONGITUD_MAXIMA_MOTIVO = 200;
 
         private const int ITERACIONES_HASH = 100000;
@@ -102,6 +105,8 @@ namespace SistemaBiblioteca1.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("El id universitario no puede estar vacío.");
+                if (value.Trim().Length > LONGITUD_MAXIMA_ID_UNIVERSITARIO)
+                    throw new ArgumentException("El id universitario no puede pasar de " + LONGITUD_MAXIMA_ID_UNIVERSITARIO + " caracteres.");
                 idUniversitario = value.Trim();
             }
         }
@@ -146,6 +151,17 @@ namespace SistemaBiblioteca1.Models
             get { return contrasenaHash.Length > 0; }
         }
 
+        public string RutaImagen
+        {
+            get { return rutaImagen; }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value) && Path.IsPathRooted(value))
+                    throw new ArgumentException("La ruta de la imagen debe ser relativa, no una ruta absoluta.");
+                rutaImagen = string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+            }
+        }
+
         public RolUsuario Rol
         {
             get { return rol; }
@@ -169,6 +185,7 @@ namespace SistemaBiblioteca1.Models
             motivoBaneo = string.Empty;
             rol = RolUsuario.Usuario;
             contrasenaHash = string.Empty;
+            rutaImagen = string.Empty;
             EsActivo = false;
         }
 
@@ -177,6 +194,7 @@ namespace SistemaBiblioteca1.Models
                         RolUsuario rol = RolUsuario.Usuario) : base(idUsuario)
         {
             contrasenaHash = string.Empty;
+            rutaImagen = string.Empty;
             motivoBaneo = string.Empty;
             Nombre = nombre;
             Apellido = apellido;
@@ -421,4 +439,4 @@ namespace SistemaBiblioteca1.Models
                    $"Estado: {(EsActivo ? "Activo" : "Inactivo")}";
         }
     }
-} 
+}

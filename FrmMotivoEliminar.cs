@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Windows.Forms;
 
@@ -17,6 +18,7 @@ namespace SistemaBiblioteca1
         public FrmMotivoEliminar(string idPrestamo)
         {
             InitializeComponent();
+            txtMotivo.MaxLength = LimitesCampos.MotivoEliminar;
             lblMotivo.Text = "Motivo de eliminar el préstamo " + idPrestamo + ":";
             FormClosing += FrmMotivoEliminar_FormClosing;
         }

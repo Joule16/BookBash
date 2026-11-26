@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Windows.Forms;
 using SistemaBiblioteca1.Models;
@@ -13,6 +14,8 @@ namespace SistemaBiblioteca1
         public FrmCategoria()
         {
             InitializeComponent();
+            txtNombreCategoria.MaxLength = LimitesCampos.Nombre;
+            txtDescripcionCategoria.MaxLength = LimitesCampos.Descripcion;
 
             ConfigurarCampoLetras(txtNombreCategoria, "Nombre de la categoría");
             ConfigurarCampoLetras(txtDescripcionCategoria, "Descripción", false);
@@ -47,7 +50,7 @@ namespace SistemaBiblioteca1
 
                 if (categoria == null)
                 {
-                    alerta.SetError(txtId, "No existe una categoría con ese id.");
+                    MostrarErrorBusqueda(alerta, "No existe una categoría con ese id.");
                     return;
                 }
 
@@ -59,7 +62,7 @@ namespace SistemaBiblioteca1
             }
             catch (ArgumentException ex)
             {
-                alerta.SetError(txtId, ex.Message);
+                MostrarErrorBusqueda(alerta, ex.Message);
             }
         }
 
@@ -97,6 +100,7 @@ namespace SistemaBiblioteca1
             }
             catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
             {
+                MessageBox.Show(ex.Message, "No se pudo eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 MostrarEstado(barraEstado, ex.Message);
             }
         }

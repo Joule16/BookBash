@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,12 +33,46 @@ namespace SistemaBiblioteca1
         }
 
         private readonly Dictionary<Control, ReglaCampo> reglas = new Dictionary<Control, ReglaCampo>();
+        private bool _escaladoAplicado = false;
 
         public FrmBase()
         {
             InitializeComponent();
 
             ConfigurarCampoEntero(txtId, "ID");
+            txtId.MaxLength = LONGITUD_MAXIMA_ID;
+        }
+
+        protected const int LONGITUD_MAXIMA_ID = 9;
+
+        protected virtual bool EscaladoAutomatico
+        {
+            get { return true; }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if (DesignMode || !EscaladoAutomatico || _escaladoAplicado)
+                return;
+
+            _escaladoAplicado = true;
+
+            if (TieneBarraAcciones())
+                EscaladorModulo.Aplicar(this);
+            else
+                EscaladorUI.Aplicar(this);
+        }
+
+        private bool TieneBarraAcciones()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is BarraAccionesPersona3)
+                    return true;
+            }
+            return false;
         }
 
         protected void ConfigurarCampoLetras(TextBox txt, string nombreCampo, bool obligatorio = true)
@@ -283,12 +318,20 @@ namespace SistemaBiblioteca1
             if (mensaje != null)
             {
                 epValidaciones.SetError(txtId, mensaje);
+                MessageBox.Show(mensaje, "ID no válido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtId.Focus();
                 return false;
             }
 
             epValidaciones.SetError(txtId, "");
             return true;
+        }
+
+        protected void MostrarErrorBusqueda(ErrorProvider alerta, string mensaje)
+        {
+            alerta.SetError(txtId, mensaje);
+            MessageBox.Show(mensaje, "No se pudo buscar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtId.Focus();
         }
 
         protected void LimpiarErrores()

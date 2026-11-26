@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel
-//Nuñez Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,6 +25,26 @@ namespace SistemaBiblioteca1
             {
                 c.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             }
+
+            dgvLibros.CellDoubleClick += dgvLibros_CellDoubleClick;
+        }
+
+        private void dgvLibros_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            object? valor = dgvLibros.Rows[e.RowIndex].Cells["colId"].Value;
+            if (valor == null || !int.TryParse(valor.ToString(), out int idLibro))
+            {
+                MostrarMensaje("No se pudo leer el ID del libro seleccionado.", true);
+                return;
+            }
+
+            if (MdiParent is FrmMaestro maestro)
+                maestro.EditarLibro(idLibro);
+            else
+                MostrarMensaje("No se pudo abrir el formulario de edición.", true);
         }
 
         protected override void OnResize(EventArgs e)
@@ -93,6 +114,7 @@ namespace SistemaBiblioteca1
             dgvLibros.Columns.Add("colIsbn", "ISBN");
             dgvLibros.Columns.Add("colAnio", "Año");
             dgvLibros.Columns.Add("colPuntoEntrega", "Punto de entrega");
+            dgvLibros.Columns.Add("colEjemplares", "Ejemplares");
             dgvLibros.Columns.Add("colEstado", "Estado");
         }
 
@@ -185,6 +207,7 @@ namespace SistemaBiblioteca1
                     libro.Isbn,
                     libro.AnioPublicacion,
                     libro.PuntoEntrega.Length > 0 ? libro.PuntoEntrega : "(ciudad del dueño)",
+                    TextoEjemplares(libro.Id),
                     libro.EsActivo ? "Disponible" : "Dado de baja");
 
                 if (!libro.EsActivo)
@@ -215,6 +238,12 @@ namespace SistemaBiblioteca1
                     }
                 }
             }
+        }
+
+        private static string TextoEjemplares(int idLibro)
+        {
+            Ejemplar.ContarDeLibro(idLibro, out int total, out int disponibles);
+            return total + " (" + disponibles + " disp.)";
         }
 
         private void AjustarColumnas()
@@ -261,6 +290,9 @@ namespace SistemaBiblioteca1
         {
             lblMensajeLibros.ForeColor = esError ? Color.FromArgb(255, 107, 107) : Color.FromArgb(0, 212, 255);
             lblMensajeLibros.Text = mensaje;
+
+            if (esError)
+                MessageBox.Show(mensaje, "Libros", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void txtBuscarLibro_TextChanged(object? sender, EventArgs e)

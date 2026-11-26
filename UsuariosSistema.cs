@@ -1,8 +1,8 @@
-﻿//   Equipo #2
+﻿//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
 using System;
 using System.Collections.Generic;
 
@@ -27,14 +27,16 @@ namespace SistemaBiblioteca1
     public static class UsuariosSistema
     {
         public const string ROL_ADMINISTRADOR = "Administrador";
-        public const string ROL_OPERADOR = "Operador";
+        public const string ROL_MODERADOR = "Moderador";
+
+        public const string ROL_USUARIO = "Usuario";
+
         public const string ROL_INVITADO = "Invitado";
 
         private static readonly List<CuentaSistema> cuentas = new List<CuentaSistema>
         {
             new CuentaSistema("admin",    "Admin123", "Administrador del Sistema", ROL_ADMINISTRADOR),
-            new CuentaSistema("operador", "Oper123",  "Operador de Biblioteca",    ROL_OPERADOR),
-            new CuentaSistema("invitado", "Invit123", "Invitado",                  ROL_INVITADO)
+            new CuentaSistema("operador", "Oper123",  "Moderador de Biblioteca",   ROL_MODERADOR)
         };
 
         public static bool ExisteUsuario(string nombreUsuario)

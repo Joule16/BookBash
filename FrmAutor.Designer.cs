@@ -1,8 +1,9 @@
-﻿// Actividad 2.4 - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
+// Actividad 2.4
 namespace SistemaBiblioteca1
 {
     partial class FrmAutor
@@ -22,6 +23,7 @@ namespace SistemaBiblioteca1
             pbxFotografia = new PictureBox();
             btnCargarImagen = new Button();
             pnlFormularioBase.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbxFotografia).BeginInit();
             SuspendLayout();
             // 
@@ -38,6 +40,8 @@ namespace SistemaBiblioteca1
             pnlFormularioBase.Controls.Add(chkEstadoAutor);
             pnlFormularioBase.Controls.Add(pbxFotografia);
             pnlFormularioBase.Controls.Add(btnCargarImagen);
+            pnlFormularioBase.Controls.SetChildIndex(btnCargarImagen, 0);
+            pnlFormularioBase.Controls.SetChildIndex(pbxFotografia, 0);
             pnlFormularioBase.Controls.SetChildIndex(lblId, 0);
             pnlFormularioBase.Controls.SetChildIndex(chkEstadoAutor, 0);
             pnlFormularioBase.Controls.SetChildIndex(dtpFechaNacimientoAutor, 0);
@@ -52,92 +56,92 @@ namespace SistemaBiblioteca1
             // 
             // lblId
             // 
-            lblId.Location = new Point(16, 19);
+            lblId.Location = new Point(29, 12);
             // 
             // txtId
             // 
-            txtId.Location = new Point(184, 16);
+            txtId.Location = new Point(161, 12);
             // 
             // lblNombreAutor
             // 
             lblNombreAutor.AutoSize = true;
-            lblNombreAutor.Location = new Point(16, 60);
+            lblNombreAutor.Location = new Point(14, 58);
             lblNombreAutor.Margin = new Padding(2, 0, 2, 0);
             lblNombreAutor.Name = "lblNombreAutor";
-            lblNombreAutor.Size = new Size(133, 20);
+            lblNombreAutor.Size = new Size(106, 15);
             lblNombreAutor.TabIndex = 2;
             lblNombreAutor.Text = "Nombre del Autor:";
             // 
             // txtNombreAutor
             // 
-            txtNombreAutor.Location = new Point(184, 60);
-            txtNombreAutor.Margin = new Padding(2, 2, 2, 2);
+            txtNombreAutor.Location = new Point(161, 55);
+            txtNombreAutor.Margin = new Padding(2);
             txtNombreAutor.Name = "txtNombreAutor";
-            txtNombreAutor.Size = new Size(185, 27);
+            txtNombreAutor.Size = new Size(162, 23);
             txtNombreAutor.TabIndex = 3;
             // 
             // lblApellidoAutor
             // 
             lblApellidoAutor.AutoSize = true;
-            lblApellidoAutor.Location = new Point(16, 96);
+            lblApellidoAutor.Location = new Point(14, 94);
             lblApellidoAutor.Margin = new Padding(2, 0, 2, 0);
             lblApellidoAutor.Name = "lblApellidoAutor";
-            lblApellidoAutor.Size = new Size(135, 20);
+            lblApellidoAutor.Size = new Size(106, 15);
             lblApellidoAutor.TabIndex = 4;
             lblApellidoAutor.Text = "Apellido del Autor:";
             // 
             // txtApellidoAutor
             // 
-            txtApellidoAutor.Location = new Point(184, 94);
-            txtApellidoAutor.Margin = new Padding(2, 2, 2, 2);
+            txtApellidoAutor.Location = new Point(161, 91);
+            txtApellidoAutor.Margin = new Padding(2);
             txtApellidoAutor.Name = "txtApellidoAutor";
-            txtApellidoAutor.Size = new Size(185, 27);
+            txtApellidoAutor.Size = new Size(162, 23);
             txtApellidoAutor.TabIndex = 5;
             // 
             // lblNacionalidadAutor
             // 
             lblNacionalidadAutor.AutoSize = true;
-            lblNacionalidadAutor.Location = new Point(16, 132);
+            lblNacionalidadAutor.Location = new Point(14, 126);
             lblNacionalidadAutor.Margin = new Padding(2, 0, 2, 0);
             lblNacionalidadAutor.Name = "lblNacionalidadAutor";
-            lblNacionalidadAutor.Size = new Size(101, 20);
+            lblNacionalidadAutor.Size = new Size(80, 15);
             lblNacionalidadAutor.TabIndex = 6;
             lblNacionalidadAutor.Text = "Nacionalidad:";
             // 
             // txtNacionalidadAutor
             // 
-            txtNacionalidadAutor.Location = new Point(184, 130);
-            txtNacionalidadAutor.Margin = new Padding(2, 2, 2, 2);
+            txtNacionalidadAutor.Location = new Point(161, 123);
+            txtNacionalidadAutor.Margin = new Padding(2);
             txtNacionalidadAutor.Name = "txtNacionalidadAutor";
-            txtNacionalidadAutor.Size = new Size(185, 27);
+            txtNacionalidadAutor.Size = new Size(162, 23);
             txtNacionalidadAutor.TabIndex = 7;
             // 
             // lblFechaNacimientoAutor
             // 
             lblFechaNacimientoAutor.AutoSize = true;
-            lblFechaNacimientoAutor.Location = new Point(16, 168);
+            lblFechaNacimientoAutor.Location = new Point(14, 164);
             lblFechaNacimientoAutor.Margin = new Padding(2, 0, 2, 0);
             lblFechaNacimientoAutor.Name = "lblFechaNacimientoAutor";
-            lblFechaNacimientoAutor.Size = new Size(149, 20);
+            lblFechaNacimientoAutor.Size = new Size(120, 15);
             lblFechaNacimientoAutor.TabIndex = 8;
             lblFechaNacimientoAutor.Text = "Fecha de nacimiento:";
             // 
             // dtpFechaNacimientoAutor
             // 
             dtpFechaNacimientoAutor.Format = DateTimePickerFormat.Short;
-            dtpFechaNacimientoAutor.Location = new Point(184, 166);
-            dtpFechaNacimientoAutor.Margin = new Padding(2, 2, 2, 2);
+            dtpFechaNacimientoAutor.Location = new Point(161, 158);
+            dtpFechaNacimientoAutor.Margin = new Padding(2);
             dtpFechaNacimientoAutor.Name = "dtpFechaNacimientoAutor";
-            dtpFechaNacimientoAutor.Size = new Size(185, 27);
+            dtpFechaNacimientoAutor.Size = new Size(162, 23);
             dtpFechaNacimientoAutor.TabIndex = 9;
             // 
             // chkEstadoAutor
             // 
             chkEstadoAutor.AutoSize = true;
-            chkEstadoAutor.Location = new Point(184, 208);
-            chkEstadoAutor.Margin = new Padding(2, 2, 2, 2);
+            chkEstadoAutor.Location = new Point(207, 206);
+            chkEstadoAutor.Margin = new Padding(2);
             chkEstadoAutor.Name = "chkEstadoAutor";
-            chkEstadoAutor.Size = new Size(73, 24);
+            chkEstadoAutor.Size = new Size(60, 19);
             chkEstadoAutor.TabIndex = 10;
             chkEstadoAutor.Text = "Activo";
             chkEstadoAutor.UseVisualStyleBackColor = true;
@@ -145,9 +149,10 @@ namespace SistemaBiblioteca1
             // pbxFotografia
             // 
             pbxFotografia.BorderStyle = BorderStyle.FixedSingle;
-            pbxFotografia.Location = new Point(400, 16);
+            pbxFotografia.Location = new Point(350, 29);
+            pbxFotografia.Margin = new Padding(3, 2, 3, 2);
             pbxFotografia.Name = "pbxFotografia";
-            pbxFotografia.Size = new Size(200, 200);
+            pbxFotografia.Size = new Size(175, 150);
             pbxFotografia.SizeMode = PictureBoxSizeMode.StretchImage;
             pbxFotografia.TabIndex = 11;
             pbxFotografia.TabStop = false;
@@ -155,9 +160,10 @@ namespace SistemaBiblioteca1
             // btnCargarImagen
             // 
             btnCargarImagen.CausesValidation = false;
-            btnCargarImagen.Location = new Point(400, 226);
+            btnCargarImagen.Location = new Point(350, 201);
+            btnCargarImagen.Margin = new Padding(3, 2, 3, 2);
             btnCargarImagen.Name = "btnCargarImagen";
-            btnCargarImagen.Size = new Size(200, 34);
+            btnCargarImagen.Size = new Size(175, 26);
             btnCargarImagen.TabIndex = 12;
             btnCargarImagen.Text = "Cargar Imagen";
             btnCargarImagen.UseVisualStyleBackColor = true;
@@ -165,14 +171,15 @@ namespace SistemaBiblioteca1
             // 
             // FrmAutor
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(640, 360);
+            ClientSize = new Size(560, 270);
             Name = "FrmAutor";
             Text = "FrmAutor";
-            ((System.ComponentModel.ISupportInitialize)pbxFotografia).EndInit();
             pnlFormularioBase.ResumeLayout(false);
             pnlFormularioBase.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pbxFotografia).EndInit();
             ResumeLayout(false);
         }
 

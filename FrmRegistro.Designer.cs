@@ -1,8 +1,8 @@
-﻿//   Equipo #2
+﻿//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
 namespace SistemaBiblioteca1
 {
     partial class FrmRegistro
@@ -17,8 +17,6 @@ namespace SistemaBiblioteca1
             }
             base.Dispose(disposing);
         }
-
-        #region Windows Form Designer generated code
 
         private void InitializeComponent()
         {
@@ -250,9 +248,6 @@ namespace SistemaBiblioteca1
             ResumeLayout(false);
             PerformLayout();
         }
-
-        #endregion
-
         private Label lblTituloRegistro;
         private Label lblNombre;
         private TextBox txtNombre;

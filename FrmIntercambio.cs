@@ -1,12 +1,14 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel
-//Nuñez Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using SistemaBiblioteca1.Models;
@@ -18,9 +20,12 @@ namespace SistemaBiblioteca1
         public FrmIntercambio()
         {
             InitializeComponent();
+            txtIdLibroOfrecidoIntercambio.MaxLength = LimitesCampos.Id;
 
             ConfigurarCampoEntero(txtIdUsuarioIntercambio, "ID solicitante");
             ConfigurarCampoEntero(txtIdLibroSolicitadoIntercambio, "ID libro solicitado");
+            txtIdUsuarioIntercambio.MaxLength = LONGITUD_MAXIMA_ID;
+            txtIdLibroSolicitadoIntercambio.MaxLength = LONGITUD_MAXIMA_ID;
             ConfigurarCampoLista(cmbEstatusIntercambio, "Estatus");
 
             txtIdLibroOfrecidoIntercambio.KeyPress += SoloDigitos_KeyPress;
@@ -30,10 +35,15 @@ namespace SistemaBiblioteca1
             cmbEstatusIntercambio.SelectedIndexChanged += cmbEstatusIntercambio_SelectedIndexChanged;
 
             cmbEstatusIntercambio.SelectedIndex = (int)EstatusIntercambio.Pendiente;
+
+            FijarSolicitanteInvitado();
         }
 
         public void EjecutarGuardar()
         {
+            if (!ValidarReglasInvitado())
+                return;
+
             if (!ValidarFormulario())
                 return;
 
@@ -66,7 +76,13 @@ namespace SistemaBiblioteca1
 
                 if (intercambio == null)
                 {
-                    alerta.SetError(txtId, "No existe un intercambio con ese id.");
+                    MostrarErrorBusqueda(alerta, "No existe un intercambio con ese id.");
+                    return;
+                }
+
+                if (Sesion.EsUsuario && intercambio.IdUsuarioSolicitante != (Sesion.UsuarioActual?.Id ?? -1))
+                {
+                    MostrarErrorBusqueda(alerta, "Solo puedes consultar tus propios intercambios.");
                     return;
                 }
 
@@ -96,7 +112,7 @@ namespace SistemaBiblioteca1
             }
             catch (ArgumentException ex)
             {
-                alerta.SetError(txtId, ex.Message);
+                MostrarErrorBusqueda(alerta, ex.Message);
             }
         }
 
@@ -144,6 +160,7 @@ namespace SistemaBiblioteca1
             }
             catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
             {
+                MessageBox.Show(ex.Message, "No se pudo eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 MostrarEstado(barraEstado, ex.Message);
             }
         }
@@ -167,6 +184,63 @@ namespace SistemaBiblioteca1
                                    (EstatusIntercambio)cmbEstatusIntercambio.SelectedIndex,
                                    fechaConclusion,
                                    txtPuntoEncuentroIntercambio.Text);
+        }
+
+        private void FijarSolicitanteInvitado()
+        {
+            if (!Sesion.EsUsuario || Sesion.UsuarioActual == null)
+                return;
+
+            txtIdUsuarioIntercambio.Text = Sesion.UsuarioActual.Id.ToString();
+            txtIdUsuarioIntercambio.ReadOnly = true;
+
+            cmbEstatusIntercambio.SelectedIndex = (int)EstatusIntercambio.Pendiente;
+            cmbEstatusIntercambio.Enabled = false;
+        }
+
+        private bool ValidarReglasInvitado()
+        {
+            if (!Sesion.EsUsuario)
+                return true;
+
+            Usuario? yo = Sesion.UsuarioActual;
+            if (yo == null)
+            {
+                MessageBox.Show("Tu sesión de demostración no tiene una cuenta registrada.\n" +
+                                "Entra con una cuenta creada en «Regístrate» para pedir intercambios.",
+                                "Intercambio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (!Libro.ObtenerTodos().Any(l => l.IdPropietario == yo.Id && l.EsActivo))
+            {
+                MessageBox.Show("Para pedir un intercambio primero debes tener al menos un libro registrado.\n\n" +
+                                "Regístralo en el módulo Libro y vuelve a intentarlo.",
+                                "Registra un libro primero", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            txtIdUsuarioIntercambio.Text = yo.Id.ToString();
+            cmbEstatusIntercambio.SelectedIndex = (int)EstatusIntercambio.Pendiente;
+
+            if (!chkDonacionIntercambio.Checked &&
+                int.TryParse(txtIdLibroOfrecidoIntercambio.Text.Trim(), out int idOfrecido))
+            {
+                Libro? ofrecido = new Libro().ConsultarRegistro(idOfrecido.ToString()) as Libro;
+                if (ofrecido == null || ofrecido.IdPropietario != yo.Id)
+                    return MostrarErrorCampo(txtIdLibroOfrecidoIntercambio,
+                        "El libro que ofreces debe ser uno de los que registraste tú.");
+            }
+
+            if (int.TryParse(txtIdLibroSolicitadoIntercambio.Text.Trim(), out int idSolicitado))
+            {
+                Libro? solicitado = new Libro().ConsultarRegistro(idSolicitado.ToString()) as Libro;
+                if (solicitado != null && solicitado.IdPropietario == yo.Id)
+                    return MostrarErrorCampo(txtIdLibroSolicitadoIntercambio,
+                        "No puedes solicitar un libro que ya es tuyo.");
+            }
+
+            return true;
         }
 
         private static int LeerEntero(TextBox txt, string nombre)
@@ -232,6 +306,7 @@ namespace SistemaBiblioteca1
             LimpiarErrores();
             txtId.Clear();
             txtIdUsuarioIntercambio.Clear();
+            FijarSolicitanteInvitado();
             txtIdLibroSolicitadoIntercambio.Clear();
             chkDonacionIntercambio.Checked = false;
             txtIdLibroOfrecidoIntercambio.Clear();

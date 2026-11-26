@@ -1,8 +1,9 @@
-﻿// Actividad 3.7 - Equipo #2
+﻿//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
+// Actividad 3.7
 using System;
 using System.Windows.Forms;
 

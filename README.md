@@ -116,3 +116,29 @@ El sistema avisa con un mensaje y permite continuar sin base de datos; en ese ca
 2. Las pantallas siguen trabajando con esas listas, por lo que las validaciones y búsquedas no cambian.
 3. Al guardar, actualizar o eliminar, el modelo escribe primero en MariaDB y solo si tiene éxito modifica su lista. Si la base de datos rechaza el dato (por ejemplo un correo repetido o un id relacionado que no existe), el formulario muestra el mensaje y la lista en memoria no cambia.
 4. El préstamo se guarda junto con su detalle de ejemplares y su historial dentro de una transacción: o se guarda todo o no se guarda nada.
+
+## Actividad 4.8 Persistencia transaccional de pedidos (1:N)
+Equipo 2
+
+### Preparación
+Ejecutar `BaseDatos/06_pedidos.sql` (después de `05_precio_libro.sql`). Crea `Pedidos` (el uno) y `Detalles_Pedidos` (los muchos).
+
+### Archivos
+- `Datos/PedidosBD.cs`: transacción en MariaDB y consultas del historial.
+- `Models/PedidoDoc.cs`: documento BSON `PedidoDoc` con el arreglo embebido `List<DetallePedidoDoc>`.
+- `Datos/ConexionMongo.cs`: `InsertarPedido` (InsertOneAsync), `ObtenerPedidos`, `EliminarPedido`.
+- `FrmVentas.cs`: al confirmar el carrito llama a `PedidosBD.Guardar`.
+- `FrmHistorialPedidos.cs / .Designer.cs`: historial (menú *Procesos > Historial de pedidos...*).
+
+### Flujo al confirmar la venta
+1. `BeginTransaction()` (MySqlTransaction).
+2. `INSERT INTO Pedidos` y `SELECT LAST_INSERT_ID();`.
+3. `foreach` sobre el carrito: se bloquean los ejemplares con `SELECT ... FOR UPDATE`, `INSERT INTO Detalles_Pedidos` y se descuenta el stock.
+4. Espejo en MongoDB: un solo `InsertOneAsync` con el pedido y sus líneas embebidas.
+5. `Commit()`. Cualquier falla (sin stock, red, MongoDB) ejecuta `Rollback()` en el `catch` y no queda ningún dato parcial.
+
+### Descuento de stock
+El stock de un libro no es una columna: es la cantidad de ejemplares activos y disponibles (ver `StockLibro`). Descontar N unidades = dar de baja (`EsActivo = 0`) los N ejemplares vendidos, dentro de la misma transacción.
+
+### Historial
+La cuadrícula principal lista los encabezados en orden cronológico. Al seleccionar un pedido, la secundaria muestra sus artículos: con `INNER JOIN` en MariaDB o leyendo el arreglo embebido en MongoDB (se elige en el combo *Consultar en*).

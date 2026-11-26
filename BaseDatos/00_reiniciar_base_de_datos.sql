@@ -5,6 +5,8 @@ USE Intercambio_libros;
 DROP VIEW IF EXISTS vw_SaldoSanciones;
 DROP VIEW IF EXISTS vw_PrestamosConRetraso;
 
+DROP TABLE IF EXISTS Detalles_Pedidos;
+DROP TABLE IF EXISTS Pedidos;
 DROP TABLE IF EXISTS Intercambio;
 DROP TABLE IF EXISTS Pago;
 DROP TABLE IF EXISTS Sancion;

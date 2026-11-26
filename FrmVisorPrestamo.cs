@@ -1,8 +1,9 @@
-﻿// Actividad 3.3 - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
+// Actividad 3.3
 using SistemaBiblioteca1.Models;
 using System;
 using System.Windows.Forms;
@@ -30,6 +31,7 @@ namespace SistemaBiblioteca1
                 if (prestamo == null)
                 {
                     txtVisor.Text = "No existe un préstamo con el id " + idPrestamo + ".";
+                    MessageBox.Show(txtVisor.Text, "Visor de préstamo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -45,6 +47,7 @@ namespace SistemaBiblioteca1
             catch (ArgumentException ex)
             {
                 txtVisor.Text = ex.Message;
+                MessageBox.Show(ex.Message, "Visor de préstamo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

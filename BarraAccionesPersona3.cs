@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,6 +35,10 @@ namespace SistemaBiblioteca1
         private float _escala = 1f;
         private readonly List<Font> _fuentes = new List<Font>();
 
+        private bool _verGuardar = true;
+        private bool _verActualizar = true;
+        private bool _verEliminar = true;
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int AnchoBase
@@ -62,10 +67,31 @@ namespace SistemaBiblioteca1
 
         public static void Agregar(Form modulo, ErrorProvider errores, StatusStrip estado)
         {
+            Agregar(modulo, errores, estado, true, true, true);
+        }
+
+        public static void Agregar(Form modulo, ErrorProvider errores, StatusStrip estado,
+                                   bool puedeGuardar, bool puedeActualizar, bool puedeEliminar)
+        {
             IPanelCRUD crud = modulo as IPanelCRUD;
             if (crud == null) return;
 
-            modulo.Controls.Add(new BarraAccionesPersona3(crud, errores, estado));
+            BarraAccionesPersona3 barra = new BarraAccionesPersona3(crud, errores, estado);
+            barra.FijarPermisos(puedeGuardar, puedeActualizar, puedeEliminar);
+            modulo.Controls.Add(barra);
+        }
+
+        public void FijarPermisos(bool puedeGuardar, bool puedeActualizar, bool puedeEliminar)
+        {
+            _verGuardar = puedeGuardar;
+            _verActualizar = puedeActualizar;
+            _verEliminar = puedeEliminar;
+
+            _btnGuardar.Visible = puedeGuardar;
+            _btnActualizar.Visible = puedeActualizar;
+            _btnEliminar.Visible = puedeEliminar;
+
+            PerformLayout();
         }
 
         private BarraAccionesPersona3(IPanelCRUD modulo, ErrorProvider errores, StatusStrip estado)
@@ -75,7 +101,7 @@ namespace SistemaBiblioteca1
             _estado = estado;
 
             _lblBuscar = new Label { AutoSize = true, Text = "ID a buscar:" };
-            _txtBuscar = new TextBox { Width = AnchoCaja, CausesValidation = false };
+            _txtBuscar = new TextBox { Width = AnchoCaja, CausesValidation = false, MaxLength = 9 };
 
             _btnBuscar = CrearBoton("Buscar", AnchoBuscar, false);
             _btnGuardar = CrearBoton("Guardar", AnchoAccion, true);
@@ -95,7 +121,7 @@ namespace SistemaBiblioteca1
             _btnActualizar.Click += (s, e) => _modulo.EjecutarActualizar();
             _btnEliminar.Click += (s, e) => _modulo.EjecutarEliminar(_estado);
 
-            Dock = DockStyle.Bottom;
+            Dock = DockStyle.Top;
             Height = AltoBarra;
         }
 
@@ -121,6 +147,8 @@ namespace SistemaBiblioteca1
             if (id.Length == 0)
             {
                 _errores.SetError(_txtBuscar, "Escribe el ID que deseas buscar.");
+                MessageBox.Show("Escribe el ID que deseas buscar.", "Búsqueda",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 _txtBuscar.Focus();
                 return;
             }
@@ -128,6 +156,8 @@ namespace SistemaBiblioteca1
             if (!int.TryParse(id, out _))
             {
                 _errores.SetError(_txtBuscar, "El ID solo admite números.");
+                MessageBox.Show("El ID solo admite números enteros (máximo 9 dígitos).", "Búsqueda",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 _txtBuscar.SelectAll();
                 _txtBuscar.Focus();
                 return;
@@ -176,8 +206,9 @@ namespace SistemaBiblioteca1
             _fuentes.Add(fuenteCaja);
             _fuentes.Add(fuenteBoton);
 
-            _txtBuscar.Width = R(AnchoCaja * s);
-            Height = R(AltoBarra * s);
+            float k = DpiUI.Factor(this);
+            _txtBuscar.Width = R(AnchoCaja * s * k);
+            Height = R(AltoBarra * s * k);
 
             PerformLayout();
         }
@@ -188,7 +219,7 @@ namespace SistemaBiblioteca1
 
             if (_btnEliminar == null) return;
 
-            float s = _escala;
+            float s = _escala * DpiUI.Factor(this);
             int altoBoton = R(AltoBoton * s);
             int anchoAccion = R(AnchoAccion * s);
             int anchoBuscar = R(AnchoBuscar * s);
@@ -196,18 +227,37 @@ namespace SistemaBiblioteca1
 
             int y = (Height - altoBoton) / 2;
 
-            int x = Width - margen - anchoAccion;
-            _btnEliminar.SetBounds(x, y, anchoAccion, altoBoton);
+            int x = Width - margen;
 
-            x -= margen + anchoAccion;
-            _btnActualizar.SetBounds(x, y, anchoAccion, altoBoton);
+            if (_verEliminar)
+            {
+                x -= anchoAccion;
+                _btnEliminar.SetBounds(x, y, anchoAccion, altoBoton);
+                x -= margen;
+            }
 
-            x -= margen + anchoAccion;
-            _btnGuardar.SetBounds(x, y, anchoAccion, altoBoton);
+            if (_verActualizar)
+            {
+                x -= anchoAccion;
+                _btnActualizar.SetBounds(x, y, anchoAccion, altoBoton);
+                x -= margen;
+            }
+
+            if (_verGuardar)
+            {
+                x -= anchoAccion;
+                _btnGuardar.SetBounds(x, y, anchoAccion, altoBoton);
+            }
 
             _lblBuscar.Location = new Point(margen, (Height - _lblBuscar.Height) / 2);
             _txtBuscar.Location = new Point(_lblBuscar.Right + R(6 * s), (Height - _txtBuscar.Height) / 2);
             _btnBuscar.SetBounds(_txtBuscar.Right + R(10 * s), y, anchoBuscar, altoBoton);
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            AplicarEscala();
         }
 
         protected override void Dispose(bool disposing)

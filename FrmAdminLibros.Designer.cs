@@ -1,8 +1,8 @@
-﻿//   Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
 namespace SistemaBiblioteca1
 {
     partial class FrmAdminLibros
@@ -18,7 +18,6 @@ namespace SistemaBiblioteca1
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
 
         private void InitializeComponent()
         {
@@ -39,23 +38,23 @@ namespace SistemaBiblioteca1
             lblTituloLibros.Location = new Point(16, 12);
             lblTituloLibros.Margin = new Padding(2, 0, 2, 0);
             lblTituloLibros.Name = "lblTituloLibros";
-            lblTituloLibros.Size = new Size(245, 32);
+            lblTituloLibros.Size = new Size(190, 32);
             lblTituloLibros.TabIndex = 0;
-            lblTituloLibros.Text = "Catálogo general de libros";
+            lblTituloLibros.Text = "Libros registrados";
 
-            lblBuscarLibro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblBuscarLibro.AutoSize = true;
             lblBuscarLibro.Location = new Point(520, 18);
             lblBuscarLibro.Margin = new Padding(2, 0, 2, 0);
             lblBuscarLibro.Name = "lblBuscarLibro";
-            lblBuscarLibro.Size = new Size(63, 20);
+            lblBuscarLibro.Size = new Size(64, 20);
             lblBuscarLibro.TabIndex = 1;
             lblBuscarLibro.Text = "Buscar:";
 
-            txtBuscarLibro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txtBuscarLibro.Location = new Point(590, 14);
             txtBuscarLibro.Margin = new Padding(2, 2, 2, 2);
+            txtBuscarLibro.MaxLength = 100;
             txtBuscarLibro.Name = "txtBuscarLibro";
+            txtBuscarLibro.PlaceholderText = "Título, ISBN o autor";
             txtBuscarLibro.Size = new Size(254, 27);
             txtBuscarLibro.TabIndex = 2;
             txtBuscarLibro.TextChanged += txtBuscarLibro_TextChanged;
@@ -64,7 +63,6 @@ namespace SistemaBiblioteca1
             dgvLibros.AllowUserToDeleteRows = false;
             dgvLibros.AllowUserToResizeRows = false;
             dgvLibros.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvLibros.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvLibros.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLibros.Location = new Point(16, 56);
             dgvLibros.Margin = new Padding(2, 2, 2, 2);
@@ -94,27 +92,27 @@ namespace SistemaBiblioteca1
             lblMensajeLibros.TabIndex = 5;
 
             btnDarDeBajaLibro.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnDarDeBajaLibro.Location = new Point(16, 424);
+            btnDarDeBajaLibro.Location = new Point(16, 428);
             btnDarDeBajaLibro.Margin = new Padding(2, 2, 2, 2);
             btnDarDeBajaLibro.Name = "btnDarDeBajaLibro";
-            btnDarDeBajaLibro.Size = new Size(170, 38);
+            btnDarDeBajaLibro.Size = new Size(160, 38);
             btnDarDeBajaLibro.TabIndex = 6;
             btnDarDeBajaLibro.Text = "Dar de baja";
             btnDarDeBajaLibro.UseVisualStyleBackColor = true;
             btnDarDeBajaLibro.Click += btnDarDeBajaLibro_Click;
 
             btnRestaurarLibro.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnRestaurarLibro.Location = new Point(202, 424);
+            btnRestaurarLibro.Location = new Point(186, 428);
             btnRestaurarLibro.Margin = new Padding(2, 2, 2, 2);
             btnRestaurarLibro.Name = "btnRestaurarLibro";
-            btnRestaurarLibro.Size = new Size(170, 38);
+            btnRestaurarLibro.Size = new Size(160, 38);
             btnRestaurarLibro.TabIndex = 7;
             btnRestaurarLibro.Text = "Restaurar";
             btnRestaurarLibro.UseVisualStyleBackColor = true;
             btnRestaurarLibro.Click += btnRestaurarLibro_Click;
 
             btnRecargarLibros.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnRecargarLibros.Location = new Point(388, 424);
+            btnRecargarLibros.Location = new Point(356, 428);
             btnRecargarLibros.Margin = new Padding(2, 2, 2, 2);
             btnRecargarLibros.Name = "btnRecargarLibros";
             btnRecargarLibros.Size = new Size(170, 38);
@@ -137,13 +135,11 @@ namespace SistemaBiblioteca1
             Controls.Add(btnRecargarLibros);
             Margin = new Padding(2, 2, 2, 2);
             Name = "FrmAdminLibros";
-            Text = "Administración - Catálogo de libros";
+            Text = "Administración - Libros";
             ((System.ComponentModel.ISupportInitialize)dgvLibros).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
-
-        #endregion
 
         private Label lblTituloLibros;
         private Label lblBuscarLibro;

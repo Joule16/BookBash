@@ -1,8 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivarez Ariel
-//Nuñes Martinez Marco Antonio
-//Equipo 2
-//=============================
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,0 +1,570 @@
+--- a/EscaladorUI.cs	2026-11-25 01:37:05.014998056 +0000
++++ b/EscaladorUI.cs	2026-11-25 01:37:05.016049251 +0000
+@@ -4,11 +4,53 @@
+ //Equipo 2
+ using System;
+ using System.Collections.Generic;
++using System.Diagnostics;
+ using System.Drawing;
+ using System.Windows.Forms;
+ 
+ namespace SistemaBiblioteca1
+ {
++    // REGLA ÚNICA DE ESCALADO DEL PROYECTO
++    //   - Los PÍXELES que se escriben a mano (constantes "a 100%") se multiplican por Factor(control).
++    //   - Los PUNTOS (tamaño de fuente) NUNCA se multiplican por el DPI: Windows ya lo hace al dibujar.
++    //   - Las escalas relativas (EscaladorUI.Escala, EscaladorModulo) son independientes del DPI.
++    public static class DpiUI
++    {
++        public const float DpiBase = 96f;
++
++        // 1.00 = 100%, 1.25 = 125%, 1.50 = 150%...
++        public static float Factor(Control c)
++        {
++            if (c == null || c.IsDisposed) return 1f;
++            int dpi = c.DeviceDpi;
++            return dpi > 0 ? dpi / DpiBase : 1f;
++        }
++
++        // Convierte "píxeles a 100%" en píxeles reales del monitor donde está el control.
++        public static int Px(Control c, float pixelesA100)
++        {
++            return (int)Math.Round(pixelesA100 * Factor(c));
++        }
++
++        // Solo en Debug: muestra en la ventana Salida los datos reales de escalado de cada formulario.
++        [Conditional("DEBUG")]
++        public static void Diagnostico(Form f, string etiqueta)
++        {
++            SizeF diseno = f.AutoScaleDimensions;
++            SizeF actual = f.CurrentAutoScaleDimensions;
++            float fx = diseno.Width > 0 ? actual.Width / diseno.Width : 0f;
++            float fy = diseno.Height > 0 ? actual.Height / diseno.Height : 0f;
++
++            Debug.WriteLine("[DPI] " + etiqueta + " (" + f.GetType().Name + ")"
++                + " DeviceDpi=" + f.DeviceDpi
++                + " AutoScaleMode=" + f.AutoScaleMode
++                + " Diseno=" + diseno.Width + "x" + diseno.Height
++                + " Actual=" + actual.Width + "x" + actual.Height
++                + " FactorFuente=" + fx.ToString("0.00") + "x" + fy.ToString("0.00")
++                + " Client=" + f.ClientSize.Width + "x" + f.ClientSize.Height);
++        }
++    }
++
+     public class EscaladorUI
+     {
+         private class Elemento
+@@ -29,11 +71,15 @@
+ 
+         private readonly Control _raiz;
+         private readonly Size _referencia;
++        private readonly int _dpiBase;
+         private readonly float _escalaMin;
+         private readonly float _escalaMax;
+         private readonly List<Elemento> _elementos = new List<Elemento>();
+         private float _escalaActual = 1f;
++        private float _kActual = 1f;
+ 
++        // Escala RELATIVA a la ventana tal como estaba al aplicar el escalador (ya con el DPI incluido).
++        // No depende del DPI del monitor.
+         public float Escala
+         {
+             get { return _escalaActual; }
+@@ -50,15 +96,22 @@
+         {
+             _raiz = raiz;
+             _referencia = raiz.ClientSize;
++            _dpiBase = raiz.DeviceDpi > 0 ? raiz.DeviceDpi : 96;
+             _escalaMin = escalaMin;
+             _escalaMax = escalaMax;
+ 
+             Registrar(raiz.Controls);
+ 
+-            raiz.Resize += (s, e) => Reescalar();
++            raiz.Resize += (s, e) => Reescalar(false);
+             raiz.Disposed += (s, e) => LiberarFuentes();
+ 
+-            Reescalar();
++            Form formulario = raiz as Form;
++            if (formulario != null)
++                formulario.DpiChanged += (s, e) => ReescalarTrasCambioDpi();
++            else
++                raiz.DpiChangedAfterParent += (s, e) => ReescalarTrasCambioDpi();
++
++            Reescalar(false);
+         }
+ 
+         private static int R(float valor)
+@@ -66,6 +119,18 @@
+             return (int)Math.Round(valor);
+         }
+ 
++        // Windows Forms también reescala por su cuenta cuando cambia el DPI (PerMonitorV2).
++        // Esperamos a que termine y volvemos a fijar NUESTROS valores, para que no se mezclen.
++        private void ReescalarTrasCambioDpi()
++        {
++            if (_raiz.IsDisposed || !_raiz.IsHandleCreated) return;
++
++            _raiz.BeginInvoke(new Action(() =>
++            {
++                if (!_raiz.IsDisposed) Reescalar(true);
++            }));
++        }
++
+         private void Registrar(Control.ControlCollection controles)
+         {
+             foreach (Control c in controles)
+@@ -112,28 +177,34 @@
+             }
+         }
+ 
+-        private void Reescalar()
++        private void Reescalar(bool forzar)
+         {
+             Size actual = _raiz.ClientSize;
+             if (_referencia.Width <= 0 || _referencia.Height <= 0) return;
+             if (actual.Width <= 0 || actual.Height <= 0) return;
+ 
++            // k = cuánto cambió el DPI desde que se registraron los controles (1.0 si no cambió).
++            int dpi = _raiz.DeviceDpi > 0 ? _raiz.DeviceDpi : _dpiBase;
++            float k = dpi / (float)_dpiBase;
++
++            // La referencia se expresa en píxeles del DPI inicial: se lleva al DPI actual antes de comparar.
+             float s = Math.Min(
+-                (float)actual.Width / _referencia.Width,
+-                (float)actual.Height / _referencia.Height);
++                actual.Width / (_referencia.Width * k),
++                actual.Height / (_referencia.Height * k));
+ 
+             s = Math.Max(_escalaMin, Math.Min(_escalaMax, s));
+             s = (float)(Math.Round(s * 20.0) / 20.0);
+ 
+-            if (Math.Abs(s - _escalaActual) < 0.001f)
++            if (!forzar && Math.Abs(s - _escalaActual) < 0.001f && Math.Abs(k - _kActual) < 0.001f)
+                 return;
+             _escalaActual = s;
++            _kActual = k;
+ 
+             _raiz.SuspendLayout();
+ 
+             foreach (Elemento el in _elementos)
+             {
+-                AplicarEscala(el, s);
++                AplicarEscala(el, s, k);
+             }
+ 
+             _raiz.ResumeLayout(true);
+@@ -144,32 +215,34 @@
+             }
+         }
+ 
+-        private void AplicarEscala(Elemento el, float s)
++        // s = escala relativa (fuentes en puntos). f = s * k = factor para píxeles.
++        private void AplicarEscala(Elemento el, float s, float k)
+         {
+             Control c = el.Control;
+             Rectangle o = el.Original;
++            float f = s * k;
+ 
+             switch (c.Dock)
+             {
+                 case DockStyle.None:
+                     if (el.EscalarTamano)
+                     {
+-                        c.SetBounds(R(o.X * s), R(o.Y * s), R(o.Width * s), R(o.Height * s));
++                        c.SetBounds(R(o.X * f), R(o.Y * f), R(o.Width * f), R(o.Height * f));
+                     }
+                     else
+                     {
+-                        c.Location = new Point(R(o.X * s), R(o.Y * s));
++                        c.Location = new Point(R(o.X * f), R(o.Y * f));
+                     }
+                     break;
+ 
+                 case DockStyle.Top:
+                 case DockStyle.Bottom:
+-                    c.Height = R(o.Height * s);
++                    c.Height = R(o.Height * f);
+                     break;
+ 
+                 case DockStyle.Left:
+                 case DockStyle.Right:
+-                    c.Width = R(o.Width * s);
++                    c.Width = R(o.Width * f);
+                     break;
+             }
+ 
+@@ -191,16 +264,16 @@
+             DataGridView g = c as DataGridView;
+             if (g != null)
+             {
+-                EscalarGrid(el, g, s);
++                EscalarGrid(el, g, s, f);
+             }
+         }
+ 
+-        private void EscalarGrid(Elemento el, DataGridView g, float s)
++        private void EscalarGrid(Elemento el, DataGridView g, float s, float f)
+         {
+             g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+-            g.ColumnHeadersHeight = Math.Max(20, R(el.AltoEncabezado * s));
++            g.ColumnHeadersHeight = Math.Max(20, R(el.AltoEncabezado * f));
+ 
+-            int alto = Math.Max(18, R(el.AltoFila * s));
++            int alto = Math.Max(18, R(el.AltoFila * f));
+             g.RowTemplate.Height = alto;
+             foreach (DataGridViewRow fila in g.Rows)
+             {
+@@ -213,7 +286,7 @@
+                 if (col.AutoSizeMode == DataGridViewAutoSizeColumnMode.NotSet ||
+                     col.AutoSizeMode == DataGridViewAutoSizeColumnMode.None)
+                 {
+-                    col.Width = Math.Max(20, R(el.Anchos[i] * s));
++                    col.Width = Math.Max(20, R(el.Anchos[i] * f));
+                 }
+             }
+ 
+@@ -242,4 +315,4 @@
+             }
+         }
+     }
+-}
+\ No newline at end of file
++}
+--- a/EscaladorModulo.cs	2026-11-25 01:37:05.017033193 +0000
++++ b/EscaladorModulo.cs	2026-11-25 01:37:05.017996955 +0000
+@@ -39,6 +39,7 @@
+         private readonly List<Elemento> _elementos = new List<Elemento>();
+         private readonly int _anchoContenido;
+         private readonly int _altoContenido;
++        private readonly int _dpiBase;
+ 
+         private float _escala = -1f;
+         private float _escalaBarra = -1f;
+@@ -46,6 +47,7 @@
+         private int _offY = int.MinValue;
+         private bool _aplicando;
+         private bool _pendiente;
++        private int _dpiUltimo;
+ 
+         public static EscaladorModulo Aplicar(Form modulo)
+         {
+@@ -73,6 +75,7 @@
+         private EscaladorModulo(Form modulo)
+         {
+             _modulo = modulo;
++            _dpiBase = modulo.DeviceDpi > 0 ? modulo.DeviceDpi : 96;
+ 
+             foreach (Control c in modulo.Controls)
+             {
+@@ -88,8 +91,8 @@
+             int maxAbajo = 0;
+             Medir(modulo.Controls, true, ref maxDerecha, ref maxAbajo);
+ 
+-            _anchoContenido = maxDerecha + MargenDiseno;
+-            _altoContenido = maxAbajo + MargenDiseno;
++            _anchoContenido = maxDerecha + DpiUI.Px(modulo, MargenDiseno);
++            _altoContenido = maxAbajo + DpiUI.Px(modulo, MargenDiseno);
+ 
+             if (maxDerecha == 0 || maxAbajo == 0) return;
+ 
+@@ -97,6 +100,8 @@
+ 
+             modulo.Resize += (s, e) => Reescalar();
+             modulo.Disposed += (s, e) => LiberarFuentes();
++            modulo.DpiChanged += (s, e) => ReescalarTrasCambioDpi();
++            modulo.DpiChangedAfterParent += (s, e) => ReescalarTrasCambioDpi();
+ 
+             Reescalar();
+         }
+@@ -212,6 +217,18 @@
+             while (_pendiente && vueltas < 4);
+         }
+ 
++        // Windows Forms también reescala por su cuenta cuando cambia el DPI (PerMonitorV2).
++        // Esperamos a que termine y volvemos a fijar NUESTROS valores, para que no se mezclen.
++        private void ReescalarTrasCambioDpi()
++        {
++            if (_modulo.IsDisposed || !_modulo.IsHandleCreated) return;
++
++            _modulo.BeginInvoke(new Action(() =>
++            {
++                if (!_modulo.IsDisposed) Reescalar();
++            }));
++        }
++
+         private void ReescalarUnaVez()
+         {
+             if (_aplicando) return;
+@@ -220,25 +237,36 @@
+             int h = _modulo.ClientSize.Height;
+             if (w <= 0 || h <= 0) return;
+ 
++            int dpi = _modulo.DeviceDpi > 0 ? _modulo.DeviceDpi : 96;
++
++            // kAbs: convierte "píxeles a 100%" (constantes de la barra) en píxeles reales.
++            // kCambio: cuánto cambió el DPI desde que se midió el contenido (1.0 si no cambió).
++            float kAbs = dpi / DpiUI.DpiBase;
++            float kCambio = dpi / (float)_dpiBase;
++
+             float sBarra = 1f;
+             float altoBarra = 0f;
+ 
+             if (_barra != null)
+             {
+-                sBarra = Math.Min(w / (float)_barra.AnchoBase, FraccionMaxBarra * h / AltoBarraBase);
++                sBarra = Math.Min(w / (_barra.AnchoBase * kAbs), FraccionMaxBarra * h / (AltoBarraBase * kAbs));
+                 sBarra = Paso(Limitar(sBarra));
+-                altoBarra = AltoBarraBase * sBarra;
++                altoBarra = AltoBarraBase * kAbs * sBarra;
+             }
+ 
+-            float sAncho = w / (float)_anchoContenido;
+-            float sAlto = (h - altoBarra) / _altoContenido;
++            float sAncho = w / (_anchoContenido * kCambio);
++            float sAlto = (h - altoBarra) / (_altoContenido * kCambio);
+             float s = Paso(Limitar(Math.Min(sAncho, sAlto)));
+ 
+-            int offX = Math.Max(0, (int)((w - _anchoContenido * s) / 2f));
+-            int offY = Math.Max(0, (int)((h - altoBarra - _altoContenido * s) / 2f));
++            // s es la escala RELATIVA (no depende del DPI); f es el factor para píxeles.
++            float f = s * kCambio;
++
++            int offX = Math.Max(0, (int)((w - _anchoContenido * f) / 2f));
++            int offY = Math.Max(0, (int)((h - altoBarra - _altoContenido * f) / 2f));
+ 
+-            bool cambioContenido = Math.Abs(s - _escala) > 0.001f;
+-            bool cambioBarra = Math.Abs(sBarra - _escalaBarra) > 0.001f;
++            bool cambioDpi = dpi != _dpiUltimo;
++            bool cambioContenido = cambioDpi || Math.Abs(s - _escala) > 0.001f;
++            bool cambioBarra = cambioDpi || Math.Abs(sBarra - _escalaBarra) > 0.001f;
+ 
+             if (!cambioContenido && !cambioBarra && offX == _offX && offY == _offY) return;
+ 
+@@ -247,6 +275,7 @@
+ 
+             try
+             {
++                _dpiUltimo = dpi;
+                 _escala = s;
+                 _escalaBarra = sBarra;
+                 _offX = offX;
+@@ -261,7 +290,7 @@
+                 {
+                     if (!cambioContenido && !el.EsRaiz) continue;
+ 
+-                    AplicarEscala(el, s, !cambioContenido);
++                    AplicarEscala(el, f, s, !cambioContenido);
+                 }
+             }
+             finally
+@@ -271,13 +300,14 @@
+             }
+         }
+ 
+-        private void AplicarEscala(Elemento el, float s, bool soloPosicion)
++        // f = factor para píxeles (escala relativa x cambio de DPI). s = escala relativa, para fuentes en puntos.
++        private void AplicarEscala(Elemento el, float f, float s, bool soloPosicion)
+         {
+             Control c = el.Control;
+             Rectangle o = el.Original;
+ 
+-            int x = R(o.X * s);
+-            int y = R(o.Y * s);
++            int x = R(o.X * f);
++            int y = R(o.Y * f);
+ 
+             if (el.EsRaiz)
+             {
+@@ -296,7 +326,7 @@
+                 case DockStyle.None:
+                     if (el.EscalarTamano)
+                     {
+-                        c.SetBounds(x, y, R(o.Width * s), R(o.Height * s));
++                        c.SetBounds(x, y, R(o.Width * f), R(o.Height * f));
+                     }
+                     else
+                     {
+@@ -306,12 +336,12 @@
+ 
+                 case DockStyle.Top:
+                 case DockStyle.Bottom:
+-                    c.Height = R(o.Height * s);
++                    c.Height = R(o.Height * f);
+                     break;
+ 
+                 case DockStyle.Left:
+                 case DockStyle.Right:
+-                    c.Width = R(o.Width * s);
++                    c.Width = R(o.Width * f);
+                     break;
+             }
+ 
+@@ -333,16 +363,16 @@
+             DataGridView g = c as DataGridView;
+             if (g != null)
+             {
+-                EscalarGrid(el, g, s);
++                EscalarGrid(el, g, f, s);
+             }
+         }
+ 
+-        private void EscalarGrid(Elemento el, DataGridView g, float s)
++        private void EscalarGrid(Elemento el, DataGridView g, float f, float s)
+         {
+             g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+-            g.ColumnHeadersHeight = Math.Max(20, R(el.AltoEncabezado * s));
++            g.ColumnHeadersHeight = Math.Max(20, R(el.AltoEncabezado * f));
+ 
+-            int alto = Math.Max(18, R(el.AltoFila * s));
++            int alto = Math.Max(18, R(el.AltoFila * f));
+             g.RowTemplate.Height = alto;
+             foreach (DataGridViewRow fila in g.Rows)
+             {
+@@ -355,7 +385,7 @@
+                 if (col.AutoSizeMode == DataGridViewAutoSizeColumnMode.NotSet ||
+                     col.AutoSizeMode == DataGridViewAutoSizeColumnMode.None)
+                 {
+-                    col.Width = Math.Max(20, R(el.Anchos[i] * s));
++                    col.Width = Math.Max(20, R(el.Anchos[i] * f));
+                 }
+             }
+ 
+--- a/BarraAccionesPersona3.cs	2026-11-25 01:37:05.019004486 +0000
++++ b/BarraAccionesPersona3.cs	2026-11-25 01:37:05.019959516 +0000
+@@ -201,8 +201,11 @@
+             _fuentes.Add(fuenteCaja);
+             _fuentes.Add(fuenteBoton);
+ 
+-            _txtBuscar.Width = R(AnchoCaja * s);
+-            Height = R(AltoBarra * s);
++            // Las constantes de ancho/alto están en píxeles a 100%: se llevan al DPI real.
++            // Las fuentes (arriba) están en puntos y no se multiplican por el DPI.
++            float k = DpiUI.Factor(this);
++            _txtBuscar.Width = R(AnchoCaja * s * k);
++            Height = R(AltoBarra * s * k);
+ 
+             PerformLayout();
+         }
+@@ -213,7 +216,8 @@
+ 
+             if (_btnEliminar == null) return;
+ 
+-            float s = _escala;
++            // En OnLayout todo son píxeles: escala relativa x DPI.
++            float s = _escala * DpiUI.Factor(this);
+             int altoBoton = R(AltoBoton * s);
+             int anchoAccion = R(AnchoAccion * s);
+             int anchoBuscar = R(AnchoBuscar * s);
+@@ -248,6 +252,12 @@
+             _btnBuscar.SetBounds(_txtBuscar.Right + R(10 * s), y, anchoBuscar, altoBoton);
+         }
+ 
++        protected override void OnDpiChangedAfterParent(EventArgs e)
++        {
++            base.OnDpiChangedAfterParent(e);
++            AplicarEscala();
++        }
++
+         protected override void Dispose(bool disposing)
+         {
+             if (disposing)
+--- a/MenuPersona3.cs	2026-11-25 01:37:05.020924412 +0000
++++ b/MenuPersona3.cs	2026-11-25 01:37:05.021867015 +0000
+@@ -103,7 +103,7 @@
+ 
+         private int AnchoCompleto
+         {
+-            get { return (int)Math.Round(AnchoBase * _factor); }
++            get { return (int)Math.Round(AnchoBase * _factor * DpiUI.Factor(this)); }
+         }
+ 
+         public MenuPersona3()
+@@ -203,7 +203,7 @@
+             {
+                 if (_items.Length == 0) return 0;
+ 
+-                float tope = FilaBase * _factor;
++                float tope = FilaBase * _factor * DpiUI.Factor(this);
+                 return (int)Math.Min(Height / (float)_items.Length, tope);
+             }
+         }
+@@ -212,7 +212,7 @@
+         {
+             get
+             {
+-                float k = Math.Min(AlturaFila / FilaBase, _factor);
++                float k = Math.Min(AlturaFila / (FilaBase * DpiUI.Factor(this)), _factor);
+                 return Math.Max(0.7f, Math.Min(2.4f, k));
+             }
+         }
+@@ -250,6 +250,18 @@
+             return _fuente;
+         }
+ 
++        protected override void OnDpiChangedAfterParent(EventArgs e)
++        {
++            base.OnDpiChangedAfterParent(e);
++
++            if (_expandido)
++            {
++                Width = AnchoCompleto;
++            }
++
++            Invalidate();
++        }
++
+         protected override void OnMouseMove(MouseEventArgs e)
+         {
+             base.OnMouseMove(e);
+@@ -313,7 +325,7 @@
+             float desfaseSombra = 5f * k;
+             int y0 = DesplazamientoY;
+ 
+-            float anchoCompleto = AnchoBase * _factor;
++            float anchoCompleto = AnchoBase * _factor * DpiUI.Factor(this);
+ 
+             using (var formato = new StringFormat
+             {
+--- a/FrmMaestro.cs	2026-11-25 01:37:05.022868058 +0000
++++ b/FrmMaestro.cs	2026-11-25 01:37:05.023831770 +0000
+@@ -418,8 +418,10 @@
+                 vista.Location = new Point(10, 10);
+             }
+ 
++            EscaladorModulo.FijarAnclas(vista);
+             vista.MdiParent = this;
+             vista.Show();
++            EscaladorModulo.Aplicar(vista);
+ 
+             tsslEstado.Text = "Proceso activo: Carrito de compras";
+         }
+@@ -464,8 +466,10 @@
+                 vista.Location = new Point(10 + desfase, 10 + desfase);
+             }
+ 
++            EscaladorModulo.FijarAnclas(vista);
+             vista.MdiParent = this;
+             vista.Show();
++            EscaladorModulo.Aplicar(vista);
+ 
+             tsslEstado.Text = estado;
+         }
+@@ -691,6 +695,7 @@
+ 
+             vista.MdiParent = this;
+             vista.Show();
++            DpiUI.Diagnostico(vista, modulo);
+ 
+             vista.AutoValidate = AutoValidate.EnableAllowFocusChange;
+ 
+--- a/SistemaBiblioteca1.csproj	2026-11-25 01:37:05.024792660 +0000
++++ b/SistemaBiblioteca1.csproj	2026-11-25 01:37:05.025831805 +0000
+@@ -6,6 +6,7 @@
+     <Nullable>enable</Nullable>
+     <UseWindowsForms>true</UseWindowsForms>
+     <ImplicitUsings>enable</ImplicitUsings>
++    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+   </PropertyGroup>
+ 
+   <ItemGroup>

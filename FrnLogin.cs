@@ -1,8 +1,8 @@
-﻿//   Equipo #2
+﻿//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -18,6 +18,7 @@ namespace SistemaBiblioteca1
         public FrmLogin()
         {
             InitializeComponent();
+            txtUsuario.MaxLength = LimitesCampos.Email;
 
             TemaPersona3.Aplicar(this);
 
@@ -66,6 +67,12 @@ namespace SistemaBiblioteca1
             }
         }
 
+        private void btnInvitado_Click(object? sender, EventArgs e)
+        {
+            Sesion.IniciarInvitado();
+            DialogResult = DialogResult.OK;
+        }
+
         private void btnRegistrarse_Click(object? sender, EventArgs e)
         {
             using (FrmRegistro registro = new FrmRegistro())
@@ -85,6 +92,9 @@ namespace SistemaBiblioteca1
         {
             lblMensajeLogin.ForeColor = esError ? ColorError : ColorExito;
             lblMensajeLogin.Text = mensaje;
+
+            if (esError)
+                MessageBox.Show(mensaje, "Inicio de sesión", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void MostrarError(string mensaje)

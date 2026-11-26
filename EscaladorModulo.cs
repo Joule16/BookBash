@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,7 +14,7 @@ namespace SistemaBiblioteca1
     {
         private const int MargenDiseno = 12;
         private const float EscalaMin = 0.6f;
-        private const float EscalaMax = 1.0f;
+        private const float EscalaMax = 2.0f;
         private const float AltoBarraBase = 56f;
         private const float FraccionMaxBarra = 0.12f;
 
@@ -39,12 +40,15 @@ namespace SistemaBiblioteca1
         private readonly List<Elemento> _elementos = new List<Elemento>();
         private readonly int _anchoContenido;
         private readonly int _altoContenido;
+        private readonly int _dpiBase;
 
         private float _escala = -1f;
         private float _escalaBarra = -1f;
         private int _offX = int.MinValue;
         private int _offY = int.MinValue;
         private bool _aplicando;
+        private bool _pendiente;
+        private int _dpiUltimo;
 
         public static EscaladorModulo Aplicar(Form modulo)
         {
@@ -72,6 +76,7 @@ namespace SistemaBiblioteca1
         private EscaladorModulo(Form modulo)
         {
             _modulo = modulo;
+            _dpiBase = modulo.DeviceDpi > 0 ? modulo.DeviceDpi : 96;
 
             foreach (Control c in modulo.Controls)
             {
@@ -87,8 +92,8 @@ namespace SistemaBiblioteca1
             int maxAbajo = 0;
             Medir(modulo.Controls, true, ref maxDerecha, ref maxAbajo);
 
-            _anchoContenido = maxDerecha + MargenDiseno;
-            _altoContenido = maxAbajo + MargenDiseno;
+            _anchoContenido = maxDerecha + DpiUI.Px(modulo, MargenDiseno);
+            _altoContenido = maxAbajo + DpiUI.Px(modulo, MargenDiseno);
 
             if (maxDerecha == 0 || maxAbajo == 0) return;
 
@@ -96,6 +101,8 @@ namespace SistemaBiblioteca1
 
             modulo.Resize += (s, e) => Reescalar();
             modulo.Disposed += (s, e) => LiberarFuentes();
+            modulo.DpiChanged += (s, e) => ReescalarTrasCambioDpi();
+            modulo.DpiChangedAfterParent += (s, e) => ReescalarTrasCambioDpi();
 
             Reescalar();
         }
@@ -195,31 +202,67 @@ namespace SistemaBiblioteca1
 
         private void Reescalar()
         {
+            if (_aplicando)
+            {
+                _pendiente = true;
+                return;
+            }
+
+            int vueltas = 0;
+            do
+            {
+                _pendiente = false;
+                ReescalarUnaVez();
+                vueltas++;
+            }
+            while (_pendiente && vueltas < 4);
+        }
+
+        private void ReescalarTrasCambioDpi()
+        {
+            if (_modulo.IsDisposed || !_modulo.IsHandleCreated) return;
+
+            _modulo.BeginInvoke(new Action(() =>
+            {
+                if (!_modulo.IsDisposed) Reescalar();
+            }));
+        }
+
+        private void ReescalarUnaVez()
+        {
             if (_aplicando) return;
 
             int w = _modulo.ClientSize.Width;
             int h = _modulo.ClientSize.Height;
             if (w <= 0 || h <= 0) return;
 
+            int dpi = _modulo.DeviceDpi > 0 ? _modulo.DeviceDpi : 96;
+
+            float kAbs = dpi / DpiUI.DpiBase;
+            float kCambio = dpi / (float)_dpiBase;
+
             float sBarra = 1f;
             float altoBarra = 0f;
 
             if (_barra != null)
             {
-                sBarra = Math.Min(w / (float)_barra.AnchoBase, FraccionMaxBarra * h / AltoBarraBase);
+                sBarra = Math.Min(w / (_barra.AnchoBase * kAbs), FraccionMaxBarra * h / (AltoBarraBase * kAbs));
                 sBarra = Paso(Limitar(sBarra));
-                altoBarra = AltoBarraBase * sBarra;
+                altoBarra = AltoBarraBase * kAbs * sBarra;
             }
 
-            float sAncho = w / (float)_anchoContenido;
-            float sAlto = (h - altoBarra) / _altoContenido;
+            float sAncho = w / (_anchoContenido * kCambio);
+            float sAlto = (h - altoBarra) / (_altoContenido * kCambio);
             float s = Paso(Limitar(Math.Min(sAncho, sAlto)));
 
-            int offX = Math.Max(0, (int)((w - _anchoContenido * s) / 2f));
-            int offY = Math.Max(0, (int)((h - altoBarra - _altoContenido * s) / 2f));
+            float f = s * kCambio;
 
-            bool cambioContenido = Math.Abs(s - _escala) > 0.001f;
-            bool cambioBarra = Math.Abs(sBarra - _escalaBarra) > 0.001f;
+            int offX = Math.Max(0, (int)((w - _anchoContenido * f) / 2f));
+            int offY = Math.Max(0, (int)((h - altoBarra - _altoContenido * f) / 2f));
+
+            bool cambioDpi = dpi != _dpiUltimo;
+            bool cambioContenido = cambioDpi || Math.Abs(s - _escala) > 0.001f;
+            bool cambioBarra = cambioDpi || Math.Abs(sBarra - _escalaBarra) > 0.001f;
 
             if (!cambioContenido && !cambioBarra && offX == _offX && offY == _offY) return;
 
@@ -228,6 +271,7 @@ namespace SistemaBiblioteca1
 
             try
             {
+                _dpiUltimo = dpi;
                 _escala = s;
                 _escalaBarra = sBarra;
                 _offX = offX;
@@ -242,7 +286,7 @@ namespace SistemaBiblioteca1
                 {
                     if (!cambioContenido && !el.EsRaiz) continue;
 
-                    AplicarEscala(el, s, !cambioContenido);
+                    AplicarEscala(el, f, s, !cambioContenido);
                 }
             }
             finally
@@ -252,13 +296,13 @@ namespace SistemaBiblioteca1
             }
         }
 
-        private void AplicarEscala(Elemento el, float s, bool soloPosicion)
+        private void AplicarEscala(Elemento el, float f, float s, bool soloPosicion)
         {
             Control c = el.Control;
             Rectangle o = el.Original;
 
-            int x = R(o.X * s);
-            int y = R(o.Y * s);
+            int x = R(o.X * f);
+            int y = R(o.Y * f);
 
             if (el.EsRaiz)
             {
@@ -277,7 +321,7 @@ namespace SistemaBiblioteca1
                 case DockStyle.None:
                     if (el.EscalarTamano)
                     {
-                        c.SetBounds(x, y, R(o.Width * s), R(o.Height * s));
+                        c.SetBounds(x, y, R(o.Width * f), R(o.Height * f));
                     }
                     else
                     {
@@ -287,12 +331,12 @@ namespace SistemaBiblioteca1
 
                 case DockStyle.Top:
                 case DockStyle.Bottom:
-                    c.Height = R(o.Height * s);
+                    c.Height = R(o.Height * f);
                     break;
 
                 case DockStyle.Left:
                 case DockStyle.Right:
-                    c.Width = R(o.Width * s);
+                    c.Width = R(o.Width * f);
                     break;
             }
 
@@ -314,16 +358,16 @@ namespace SistemaBiblioteca1
             DataGridView g = c as DataGridView;
             if (g != null)
             {
-                EscalarGrid(el, g, s);
+                EscalarGrid(el, g, f, s);
             }
         }
 
-        private void EscalarGrid(Elemento el, DataGridView g, float s)
+        private void EscalarGrid(Elemento el, DataGridView g, float f, float s)
         {
             g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            g.ColumnHeadersHeight = Math.Max(20, R(el.AltoEncabezado * s));
+            g.ColumnHeadersHeight = Math.Max(20, R(el.AltoEncabezado * f));
 
-            int alto = Math.Max(18, R(el.AltoFila * s));
+            int alto = Math.Max(18, R(el.AltoFila * f));
             g.RowTemplate.Height = alto;
             foreach (DataGridViewRow fila in g.Rows)
             {
@@ -336,7 +380,7 @@ namespace SistemaBiblioteca1
                 if (col.AutoSizeMode == DataGridViewAutoSizeColumnMode.NotSet ||
                     col.AutoSizeMode == DataGridViewAutoSizeColumnMode.None)
                 {
-                    col.Width = Math.Max(20, R(el.Anchos[i] * s));
+                    col.Width = Math.Max(20, R(el.Anchos[i] * f));
                 }
             }
 

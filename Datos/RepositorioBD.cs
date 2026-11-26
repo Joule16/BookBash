@@ -1,8 +1,8 @@
-//   Equipo #2
+//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
 using MySqlConnector;
 using SistemaBiblioteca1.Models;
 using System;
@@ -160,37 +160,39 @@ namespace SistemaBiblioteca1.Datos
             Editorial.CargarDesdeBD(lista);
         }
 
-
         public static void Insertar(Libro l)
         {
             ConexionBD.Ejecutar(
-                "INSERT INTO Libro (IdLibro, Titulo, Isbn, IdAutor, IdCategoria, IdEditorial, AnioPublicacion, PuntoEntrega, FechaRegistro, EsActivo) " +
-                "VALUES (@id, @titulo, @isbn, @autor, @categoria, @editorial, @anio, @punto, @registro, @activo)",
+                "INSERT INTO Libro (IdLibro, Titulo, Isbn, IdAutor, IdCategoria, IdEditorial, AnioPublicacion, PuntoEntrega, Precio, IdPropietario, RutaImagen, FechaRegistro, EsActivo) " +
+                "VALUES (@id, @titulo, @isbn, @autor, @categoria, @editorial, @anio, @punto, @precio, @propietario, @ruta, @registro, @activo)",
                 P("@id", l.Id), P("@titulo", l.Titulo), P("@isbn", l.Isbn), P("@autor", l.IdAutor), P("@categoria", l.IdCategoria),
-                P("@editorial", l.IdEditorial), P("@anio", l.AnioPublicacion), P("@punto", l.PuntoEntrega),
-                P("@registro", l.FechaRegistro), P("@activo", l.EsActivo));
+                P("@editorial", l.IdEditorial), P("@anio", l.AnioPublicacion), P("@punto", l.PuntoEntrega), P("@precio", l.Precio),
+                P("@propietario", l.IdPropietario), P("@ruta", l.RutaImagen), P("@registro", l.FechaRegistro), P("@activo", l.EsActivo));
         }
 
         public static void Actualizar(Libro l)
         {
             ConexionBD.Ejecutar(
                 "UPDATE Libro SET Titulo = @titulo, Isbn = @isbn, IdAutor = @autor, IdCategoria = @categoria, IdEditorial = @editorial, " +
-                "AnioPublicacion = @anio, PuntoEntrega = @punto, EsActivo = @activo WHERE IdLibro = @id",
+                "AnioPublicacion = @anio, PuntoEntrega = @punto, Precio = @precio, IdPropietario = @propietario, RutaImagen = @ruta, EsActivo = @activo WHERE IdLibro = @id",
                 P("@id", l.Id), P("@titulo", l.Titulo), P("@isbn", l.Isbn), P("@autor", l.IdAutor), P("@categoria", l.IdCategoria),
-                P("@editorial", l.IdEditorial), P("@anio", l.AnioPublicacion), P("@punto", l.PuntoEntrega), P("@activo", l.EsActivo));
+                P("@editorial", l.IdEditorial), P("@anio", l.AnioPublicacion), P("@punto", l.PuntoEntrega), P("@precio", l.Precio),
+                P("@propietario", l.IdPropietario), P("@ruta", l.RutaImagen), P("@activo", l.EsActivo));
         }
 
         private static void CargarLibros()
         {
             List<Libro> lista = ConexionBD.Leer(
-                "SELECT IdLibro, Titulo, Isbn, IdAutor, IdCategoria, IdEditorial, AnioPublicacion, PuntoEntrega, FechaRegistro, EsActivo " +
+                "SELECT IdLibro, Titulo, Isbn, IdAutor, IdCategoria, IdEditorial, AnioPublicacion, PuntoEntrega, IdPropietario, FechaRegistro, EsActivo, RutaImagen, Precio " +
                 "FROM Libro ORDER BY IdLibro",
                 r =>
                 {
                     Libro l = new Libro(ConexionBD.Entero(r, 0), ConexionBD.Texto(r, 1), ConexionBD.Texto(r, 2),
                                         ConexionBD.Entero(r, 3), ConexionBD.Entero(r, 4), ConexionBD.Entero(r, 5),
-                                        ConexionBD.Entero(r, 6), ConexionBD.Booleano(r, 9), ConexionBD.Texto(r, 7));
-                    l.FechaRegistro = ConexionBD.Fecha(r, 8);
+                                        ConexionBD.Entero(r, 6), ConexionBD.Booleano(r, 10), ConexionBD.Texto(r, 7),
+                                        ConexionBD.EnteroNulo(r, 8), ConexionBD.Texto(r, 11),
+                                        r.IsDBNull(12) ? 0m : Convert.ToDecimal(r.GetValue(12)));
+                    l.FechaRegistro = ConexionBD.Fecha(r, 9);
                     return l;
                 });
             Libro.CargarDesdeBD(lista);
@@ -234,11 +236,11 @@ namespace SistemaBiblioteca1.Datos
         {
             ConexionBD.Ejecutar(
                 "INSERT INTO Usuario (IdUsuario, Nombre, Apellido, Email, Telefono, IdUniversitario, ContadorSanciones, EstaBaneado, " +
-                "MotivoBaneo, Rol, ContrasenaHash, FechaRegistro, EsActivo) " +
-                "VALUES (@id, @nombre, @apellido, @email, @telefono, @universitario, @contador, @baneado, @motivo, @rol, @hash, @registro, @activo)",
+                "MotivoBaneo, Rol, ContrasenaHash, RutaImagen, FechaRegistro, EsActivo) " +
+                "VALUES (@id, @nombre, @apellido, @email, @telefono, @universitario, @contador, @baneado, @motivo, @rol, @hash, @ruta, @registro, @activo)",
                 P("@id", u.Id), P("@nombre", u.Nombre), P("@apellido", u.Apellido), P("@email", u.Email), P("@telefono", u.Telefono),
                 P("@universitario", u.IdUniversitario), P("@contador", u.ContadorSanciones), P("@baneado", u.EstaBaneado),
-                P("@motivo", u.MotivoBaneo), P("@rol", (int)u.Rol), P("@hash", u.ContrasenaHash),
+                P("@motivo", u.MotivoBaneo), P("@rol", (int)u.Rol), P("@hash", u.ContrasenaHash), P("@ruta", u.RutaImagen),
                 P("@registro", u.FechaRegistro), P("@activo", u.EsActivo));
         }
 
@@ -247,27 +249,29 @@ namespace SistemaBiblioteca1.Datos
             ConexionBD.Ejecutar(
                 "UPDATE Usuario SET Nombre = @nombre, Apellido = @apellido, Email = @email, Telefono = @telefono, " +
                 "IdUniversitario = @universitario, ContadorSanciones = @contador, EstaBaneado = @baneado, MotivoBaneo = @motivo, " +
-                "Rol = @rol, ContrasenaHash = @hash, EsActivo = @activo WHERE IdUsuario = @id",
+                "Rol = @rol, ContrasenaHash = @hash, RutaImagen = @ruta, EsActivo = @activo WHERE IdUsuario = @id",
                 P("@id", u.Id), P("@nombre", u.Nombre), P("@apellido", u.Apellido), P("@email", u.Email), P("@telefono", u.Telefono),
                 P("@universitario", u.IdUniversitario), P("@contador", u.ContadorSanciones), P("@baneado", u.EstaBaneado),
-                P("@motivo", u.MotivoBaneo), P("@rol", (int)u.Rol), P("@hash", u.ContrasenaHash), P("@activo", u.EsActivo));
+                P("@motivo", u.MotivoBaneo), P("@rol", (int)u.Rol), P("@hash", u.ContrasenaHash), P("@ruta", u.RutaImagen),
+                P("@activo", u.EsActivo));
         }
 
         private static void CargarUsuarios()
         {
             List<Usuario> lista = ConexionBD.Leer(
                 "SELECT IdUsuario, Nombre, Apellido, Email, Telefono, IdUniversitario, ContadorSanciones, EstaBaneado, " +
-                "MotivoBaneo, Rol, ContrasenaHash, FechaRegistro, EsActivo FROM Usuario ORDER BY IdUsuario",
+                "MotivoBaneo, Rol, ContrasenaHash, RutaImagen, FechaRegistro, EsActivo FROM Usuario ORDER BY IdUsuario",
                 r =>
                 {
                     Usuario u = new Usuario(ConexionBD.Entero(r, 0), ConexionBD.Texto(r, 1), ConexionBD.Texto(r, 2),
                                             ConexionBD.Texto(r, 3), ConexionBD.Texto(r, 4), ConexionBD.Texto(r, 5),
-                                            ConexionBD.Booleano(r, 12), (RolUsuario)ConexionBD.Entero(r, 9));
+                                            ConexionBD.Booleano(r, 13), (RolUsuario)ConexionBD.Entero(r, 9));
                     u.ContadorSanciones = ConexionBD.Entero(r, 6);
                     u.EstaBaneado = ConexionBD.Booleano(r, 7);
                     u.MotivoBaneo = ConexionBD.Texto(r, 8);
                     u.ContrasenaHash = ConexionBD.Texto(r, 10);
-                    u.FechaRegistro = ConexionBD.Fecha(r, 11);
+                    u.RutaImagen = ConexionBD.Texto(r, 11);
+                    u.FechaRegistro = ConexionBD.Fecha(r, 12);
                     return u;
                 });
             Usuario.CargarDesdeBD(lista);
@@ -492,6 +496,14 @@ namespace SistemaBiblioteca1.Datos
             Intercambio.CargarDesdeBD(lista);
         }
 
+
+        public static void RecargarEjemplares()
+        {
+            if (!ConexionBD.Habilitada)
+                return;
+
+            CargarEjemplares();
+        }
 
         public static void CargarTodo()
         {

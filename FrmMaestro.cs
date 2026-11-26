@@ -1,8 +1,8 @@
-﻿//   Equipo #2
+﻿//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
 using SistemaBiblioteca1.Datos;
 using System;
 using System.Drawing;
@@ -28,6 +28,8 @@ namespace SistemaBiblioteca1
         private ToolStripMenuItem mnuRestaurar;
         private ToolStripMenuItem mnuProcesos;
         private ToolStripMenuItem mnuReporteMasivo;
+        private ToolStripMenuItem mnuCarrito;
+        private ToolStripMenuItem mnuHistorial;
         private ToolStripMenuItem mnuAdministracion;
         private ToolStripMenuItem mnuCuentasAdmin;
         private ToolStripMenuItem mnuCatalogoAdmin;
@@ -36,6 +38,7 @@ namespace SistemaBiblioteca1
 
         private bool soloConsulta;
         private bool puedeEliminar = true;
+        private bool escrituraEnVista = true;
 
         private readonly string[] modulos = ModulosPermitidos();
 
@@ -43,9 +46,10 @@ namespace SistemaBiblioteca1
         {
             InitializeComponent();
 
-            this.Text = "Sistema de Biblioteca  |  " + (ConexionBD.Habilitada
+            bool esPersonal = Sesion.EsAdministrador || Sesion.EsModerador;
+            this.Text = "Sistema de Biblioteca" + (!esPersonal ? string.Empty : "  |  " + (ConexionBD.Habilitada
                 ? "Base de datos: " + ConexionBD.Destino
-                : "Sin base de datos (modo memoria)");
+                : "Sin base de datos (modo memoria)"));
 
             this.AutoValidate = AutoValidate.EnableAllowFocusChange;
 
@@ -89,6 +93,8 @@ namespace SistemaBiblioteca1
 
                 escalador.EscalaCambio += (s2, e2) => menuModulos.FactorEscala = escalador.Escala;
                 menuModulos.FactorEscala = escalador.Escala;
+
+                WindowState = FormWindowState.Maximized;
             };
         }
 
@@ -186,6 +192,8 @@ namespace SistemaBiblioteca1
             msPrincipal = new MenuStrip();
             mnuProcesos = new ToolStripMenuItem("Procesos");
             mnuReporteMasivo = new ToolStripMenuItem("Reporte masivo de sanciones...");
+            mnuCarrito = new ToolStripMenuItem("Carrito de compras...");
+            mnuHistorial = new ToolStripMenuItem("Historial de pedidos...");
             mnuVentana = new ToolStripMenuItem("Ventana");
             mnuCascada = new ToolStripMenuItem("Cascada");
             mnuMosaicoVertical = new ToolStripMenuItem("Mosaico vertical");
@@ -197,6 +205,8 @@ namespace SistemaBiblioteca1
             mnuVentana.DropDownItems.Add(mnuMosaicoHorizontal);
             mnuVentana.DropDownItems.Add(mnuRestaurar);
             mnuProcesos.DropDownItems.Add(mnuReporteMasivo);
+            mnuProcesos.DropDownItems.Add(mnuCarrito);
+            mnuProcesos.DropDownItems.Add(mnuHistorial);
             msPrincipal.Items.Add(mnuProcesos);
             msPrincipal.Items.Add(mnuVentana);
 
@@ -220,6 +230,8 @@ namespace SistemaBiblioteca1
             mnuMosaicoHorizontal.Click += mnuMosaicoHorizontal_Click;
             mnuRestaurar.Click += mnuRestaurar_Click;
             mnuReporteMasivo.Click += mnuReporteMasivo_Click;
+            mnuCarrito.Click += (s, e) => AbrirCarrito();
+            mnuHistorial.Click += (s, e) => AbrirHistorial();
 
             Color fondo = Color.FromArgb(8, 24, 60);
             msPrincipal.BackColor = fondo;
@@ -274,7 +286,7 @@ namespace SistemaBiblioteca1
                 soloConsulta = false;
                 puedeEliminar = true;
             }
-            else if (rol == UsuariosSistema.ROL_OPERADOR)
+            else if (rol == UsuariosSistema.ROL_MODERADOR)
             {
                 mnuReporteMasivo.Enabled = false;
                 soloConsulta = false;
@@ -293,7 +305,7 @@ namespace SistemaBiblioteca1
             string[] todos =
             {
                 "Administrador", "Autor", "Categoria", "Editorial", "Ejemplar", "Intercambio",
-                "Libro", "Pago", "Prestamo", "Sancion", "Usuario"
+                "Libro", "Pago", "Prestamo", "Sancion", "Usuario", "Compras"
             };
 
             string rol = SesionSistema.RolActivo;
@@ -301,10 +313,43 @@ namespace SistemaBiblioteca1
             if (rol == UsuariosSistema.ROL_ADMINISTRADOR)
                 return todos;
 
-            if (rol == UsuariosSistema.ROL_OPERADOR)
+            if (rol == UsuariosSistema.ROL_MODERADOR)
                 return Array.FindAll(todos, m => m != "Administrador");
 
-            return new string[] { "Autor", "Categoria", "Editorial", "Ejemplar", "Libro" };
+            if (rol == UsuariosSistema.ROL_USUARIO)
+            {
+                return new string[]
+                {
+                    "Catálogo", "Compras", "Mis préstamos", "Libro", "Intercambio", "Perfil"
+                };
+            }
+
+            return new string[]
+            {
+                "Catálogo", "Compras"
+            };
+        }
+
+        private void ActivarSoloLectura(Control padre)
+        {
+            foreach (Control c in padre.Controls)
+            {
+                if (c is BarraAccionesPersona3)
+                    continue;
+
+                if (c is TextBox texto)
+                    texto.ReadOnly = true;
+                else if (c is ComboBox || c is CheckBox || c is DateTimePicker || c is NumericUpDown)
+                    c.Enabled = false;
+                else if (c is Button boton)
+                {
+                    string etiqueta = boton.Text.Trim().ToLower();
+                    if (etiqueta.Contains("cargar") || etiqueta.Contains("subir") || etiqueta.Contains("imagen"))
+                        boton.Visible = false;
+                }
+
+                ActivarSoloLectura(c);
+            }
         }
 
         private void AplicarPermisosEnBotones(Control padre)
@@ -314,12 +359,11 @@ namespace SistemaBiblioteca1
                 if (c is Button)
                 {
                     string texto = c.Text.Trim().ToLower();
-
                     if (texto.Contains("eliminar") && !puedeEliminar)
-                        c.Enabled = false;
+                        c.Visible = false;
 
-                    if ((texto.Contains("guardar") || texto.Contains("actualizar")) && soloConsulta)
-                        c.Enabled = false;
+                    if ((texto.Contains("guardar") || texto.Contains("actualizar")) && !escrituraEnVista)
+                        c.Visible = false;
                 }
 
                 AplicarPermisosEnBotones(c);
@@ -381,6 +425,84 @@ namespace SistemaBiblioteca1
             AbrirPantallaAdmin<FrmAdminCuentas>("Administración: cuentas de usuario");
         }
 
+        private void AbrirCarrito()
+        {
+            foreach (Form abierto in this.MdiChildren)
+            {
+                if (abierto is FrmVentas)
+                {
+                    if (abierto.WindowState == FormWindowState.Minimized)
+                    {
+                        abierto.WindowState = FormWindowState.Normal;
+                    }
+                    abierto.Activate();
+                    return;
+                }
+            }
+
+            FrmVentas vista = new FrmVentas();
+            vista.FormClosed += (s, e) => DeseleccionarMenu("Compras");
+
+            TemaPersona3.Aplicar(vista);
+            vista.AutoValidate = AutoValidate.EnableAllowFocusChange;
+
+            if (areaMdi != null)
+            {
+                vista.StartPosition = FormStartPosition.Manual;
+                vista.Size = new Size(Math.Min(1000, areaMdi.ClientSize.Width - 20), Math.Min(676, areaMdi.ClientSize.Height - 20));
+                vista.Location = new Point(10, 10);
+            }
+
+            EscaladorModulo.FijarAnclas(vista);
+            vista.MdiParent = this;
+            vista.Show();
+            EscaladorModulo.Aplicar(vista);
+
+            tsslEstado.Text = "Proceso activo: Carrito de compras";
+        }
+
+        private void AbrirHistorial()
+        {
+            if (!Sesion.EsAdministrador && !Sesion.EsModerador)
+            {
+                MessageBox.Show("Solo el administrador y el moderador pueden consultar el historial de pedidos.",
+                                "Acceso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            foreach (Form abierto in this.MdiChildren)
+            {
+                if (abierto is FrmHistorialPedidos)
+                {
+                    if (abierto.WindowState == FormWindowState.Minimized)
+                    {
+                        abierto.WindowState = FormWindowState.Normal;
+                    }
+                    abierto.Activate();
+                    return;
+                }
+            }
+
+            FrmHistorialPedidos vista = new FrmHistorialPedidos();
+
+            TemaPersona3.Aplicar(vista);
+            vista.AutoValidate = AutoValidate.EnableAllowFocusChange;
+
+            if (areaMdi != null)
+            {
+                vista.StartPosition = FormStartPosition.Manual;
+                vista.Size = new Size(Math.Min(1000, areaMdi.ClientSize.Width - 20), Math.Min(676, areaMdi.ClientSize.Height - 20));
+                vista.Location = new Point(10, 10);
+            }
+
+            EscaladorModulo.FijarAnclas(vista);
+            vista.MdiParent = this;
+            vista.Show();
+            EscaladorModulo.Aplicar(vista);
+
+            tsslEstado.Text = "Proceso activo: Historial de pedidos";
+        }
+
         private void AbrirAdminLibros()
         {
             AbrirPantallaAdmin<FrmAdminLibros>("Administración: catálogo de libros");
@@ -421,8 +543,10 @@ namespace SistemaBiblioteca1
                 vista.Location = new Point(10 + desfase, 10 + desfase);
             }
 
+            EscaladorModulo.FijarAnclas(vista);
             vista.MdiParent = this;
             vista.Show();
+            EscaladorModulo.Aplicar(vista);
 
             tsslEstado.Text = estado;
         }
@@ -453,7 +577,7 @@ namespace SistemaBiblioteca1
                 hija.WindowState = FormWindowState.Normal;
 
                 int desfase = (numero % 4) * 25;
-                hija.Size = new Size(areaMdi.ClientSize.Width * 75 / 100, areaMdi.ClientSize.Height * 75 / 100);
+                hija.Size = new Size(areaMdi.ClientSize.Width * 85 / 100, areaMdi.ClientSize.Height * 85 / 100);
                 hija.Location = new Point(10 + desfase, 10 + desfase);
                 numero++;
             }
@@ -531,6 +655,12 @@ namespace SistemaBiblioteca1
                     return typeof(FrmSancion);
                 case "Usuario":
                     return typeof(FrmUsuario);
+                case "Catálogo":
+                    return typeof(FrmCatalogoInvitado);
+                case "Mis préstamos":
+                    return typeof(FrmMisPrestamos);
+                case "Perfil":
+                    return typeof(FrmPerfil);
                 default:
                     return null;
             }
@@ -562,6 +692,12 @@ namespace SistemaBiblioteca1
                     return new FrmSancion();
                 case "Usuario":
                     return new FrmUsuario();
+                case "Catálogo":
+                    return new FrmCatalogoInvitado();
+                case "Mis préstamos":
+                    return new FrmMisPrestamos();
+                case "Perfil":
+                    return new FrmPerfil();
                 default:
                     return null;
             }
@@ -569,6 +705,12 @@ namespace SistemaBiblioteca1
 
         private void AbrirModulo(string modulo)
         {
+            if (modulo == "Compras")
+            {
+                AbrirCarrito();
+                return;
+            }
+
             Type tipo = TipoPara(modulo);
             if (tipo == null)
                 return;
@@ -608,11 +750,19 @@ namespace SistemaBiblioteca1
 
         private void MostrarVista(Form vista, string modulo)
         {
-            BarraAccionesPersona3.Agregar(vista, errorProvider1, statusStrip1);
+            bool invitadoEscribe = Sesion.EsUsuario && (modulo == "Libro" || modulo == "Intercambio");
+            escrituraEnVista = !soloConsulta || invitadoEscribe;
+
+            BarraAccionesPersona3.Agregar(vista, errorProvider1, statusStrip1,
+                                          escrituraEnVista, escrituraEnVista, puedeEliminar);
 
             TemaPersona3.Aplicar(vista);
             FondoModulo.Aplicar(vista, TituloPara(modulo));
-            AplicarPermisosEnBotones(vista);
+            if (!(vista is FrmPerfil) && !(vista is FrmCatalogoInvitado) && !(vista is FrmMisPrestamos))
+                AplicarPermisosEnBotones(vista);
+
+            if (!escrituraEnVista && vista is IPanelCRUD)
+                ActivarSoloLectura(vista);
 
             vista.Text = NombrePara(modulo);
 
@@ -623,8 +773,8 @@ namespace SistemaBiblioteca1
             if (areaMdi != null)
             {
                 int desfase = (this.MdiChildren.Length % 4) * 25;
-                int ancho = areaMdi.ClientSize.Width * 75 / 100;
-                int alto = areaMdi.ClientSize.Height * 75 / 100;
+                int ancho = areaMdi.ClientSize.Width * 85 / 100;
+                int alto = areaMdi.ClientSize.Height * 85 / 100;
 
                 vista.StartPosition = FormStartPosition.Manual;
                 vista.Size = new Size(ancho, alto);
@@ -635,6 +785,7 @@ namespace SistemaBiblioteca1
 
             vista.MdiParent = this;
             vista.Show();
+            DpiUI.Diagnostico(vista, modulo);
 
             vista.AutoValidate = AutoValidate.EnableAllowFocusChange;
 
@@ -652,6 +803,23 @@ namespace SistemaBiblioteca1
             tsslEstado.Text = "Módulo activo: " + modulo;
             guia.Text = "¿Qué deseas hacer en " + NombrePara(modulo) + "?";
         }
+
+        public void EditarLibro(int idLibro)
+        {
+            AbrirModulo("Libro");
+
+            foreach (Form hija in this.MdiChildren)
+            {
+                if (hija is FrmLibro formularioLibro)
+                {
+                    hija.Activate();
+                    formularioLibro.EjecutarBuscar(idLibro.ToString(), errorProvider1);
+                    tsslEstado.Text = "Editando el libro #" + idLibro;
+                    return;
+                }
+            }
+        }
+
 
         private void btnMasterGuardar_Click(object sender, EventArgs e)
         {

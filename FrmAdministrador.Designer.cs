@@ -1,4 +1,9 @@
-﻿namespace SistemaBiblioteca1
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
+namespace SistemaBiblioteca1
 {
     partial class FrmAdministrador
     {
@@ -39,6 +44,7 @@
             txtContrasena = new TextBox();
             cmbNivelAcceso = new ComboBox();
             pnlFormularioBase.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).BeginInit();
             SuspendLayout();
             // 
             // pnlFormularioBase
@@ -54,7 +60,7 @@
             pnlFormularioBase.Controls.Add(cmbNivelAcceso);
             pnlFormularioBase.Controls.Add(lblContrasena);
             pnlFormularioBase.Controls.Add(txtContrasena);
-            pnlFormularioBase.Size = new Size(622, 313);
+            pnlFormularioBase.Size = new Size(544, 235);
             pnlFormularioBase.Controls.SetChildIndex(txtId, 0);
             pnlFormularioBase.Controls.SetChildIndex(lblId, 0);
             pnlFormularioBase.Controls.SetChildIndex(txtContrasena, 0);
@@ -72,84 +78,89 @@
             // lblNombreAdmin
             // 
             lblNombreAdmin.AutoSize = true;
-            lblNombreAdmin.Location = new Point(12, 49);
+            lblNombreAdmin.Location = new Point(14, 57);
             lblNombreAdmin.Name = "lblNombreAdmin";
-            lblNombreAdmin.Size = new Size(67, 20);
+            lblNombreAdmin.Size = new Size(54, 15);
             lblNombreAdmin.TabIndex = 0;
             lblNombreAdmin.Text = "Nombre:";
             // 
             // lblApellidoAdmin
             // 
             lblApellidoAdmin.AutoSize = true;
-            lblApellidoAdmin.Location = new Point(12, 86);
+            lblApellidoAdmin.Location = new Point(14, 96);
             lblApellidoAdmin.Name = "lblApellidoAdmin";
-            lblApellidoAdmin.Size = new Size(69, 20);
+            lblApellidoAdmin.Size = new Size(54, 15);
             lblApellidoAdmin.TabIndex = 1;
             lblApellidoAdmin.Text = "Apellido:";
             // 
             // lblUsuarioAdmin
             // 
             lblUsuarioAdmin.AutoSize = true;
-            lblUsuarioAdmin.Location = new Point(12, 126);
+            lblUsuarioAdmin.Location = new Point(14, 135);
             lblUsuarioAdmin.Name = "lblUsuarioAdmin";
-            lblUsuarioAdmin.Size = new Size(62, 20);
+            lblUsuarioAdmin.Size = new Size(50, 15);
             lblUsuarioAdmin.TabIndex = 2;
             lblUsuarioAdmin.Text = "Usuario:";
             // 
             // lblContrasena
             // 
             lblContrasena.AutoSize = true;
-            lblContrasena.Location = new Point(12, 166);
+            lblContrasena.Location = new Point(14, 171);
             lblContrasena.Name = "lblContrasena";
-            lblContrasena.Size = new Size(86, 20);
+            lblContrasena.Size = new Size(70, 15);
             lblContrasena.TabIndex = 3;
             lblContrasena.Text = "Contraseña:";
             // 
             // lblNivelAcceso
             // 
             lblNivelAcceso.AutoSize = true;
-            lblNivelAcceso.Location = new Point(12, 203);
+            lblNivelAcceso.Location = new Point(14, 207);
             lblNivelAcceso.Name = "lblNivelAcceso";
-            lblNivelAcceso.Size = new Size(137, 20);
+            lblNivelAcceso.Size = new Size(109, 15);
             lblNivelAcceso.TabIndex = 4;
             lblNivelAcceso.Text = "Nivel Acceso (1-3): ";
             // 
             // chkEstadoAdmin
             // 
             chkEstadoAdmin.AutoSize = true;
-            chkEstadoAdmin.Location = new Point(184, 245);
+            chkEstadoAdmin.Location = new Point(263, 203);
+            chkEstadoAdmin.Margin = new Padding(3, 2, 3, 2);
             chkEstadoAdmin.Name = "chkEstadoAdmin";
-            chkEstadoAdmin.Size = new Size(73, 24);
+            chkEstadoAdmin.Size = new Size(60, 19);
             chkEstadoAdmin.TabIndex = 5;
             chkEstadoAdmin.Text = "Activo";
             chkEstadoAdmin.UseVisualStyleBackColor = true;
             // 
             // txtNombreAdmin
             // 
-            txtNombreAdmin.Location = new Point(184, 50);
+            txtNombreAdmin.Location = new Point(161, 49);
+            txtNombreAdmin.Margin = new Padding(3, 2, 3, 2);
             txtNombreAdmin.Name = "txtNombreAdmin";
-            txtNombreAdmin.Size = new Size(185, 27);
+            txtNombreAdmin.Size = new Size(162, 23);
             txtNombreAdmin.TabIndex = 6;
             // 
             // txtApellidoAdmin
             // 
-            txtApellidoAdmin.Location = new Point(184, 86);
+            txtApellidoAdmin.Location = new Point(161, 88);
+            txtApellidoAdmin.Margin = new Padding(3, 2, 3, 2);
             txtApellidoAdmin.Name = "txtApellidoAdmin";
-            txtApellidoAdmin.Size = new Size(185, 27);
+            txtApellidoAdmin.Size = new Size(162, 23);
             txtApellidoAdmin.TabIndex = 7;
             // 
             // txtUsuarioAcceso
             // 
-            txtUsuarioAcceso.Location = new Point(184, 123);
+            txtUsuarioAcceso.Location = new Point(161, 127);
+            txtUsuarioAcceso.Margin = new Padding(3, 2, 3, 2);
             txtUsuarioAcceso.Name = "txtUsuarioAcceso";
-            txtUsuarioAcceso.Size = new Size(185, 27);
+            txtUsuarioAcceso.Size = new Size(162, 23);
             txtUsuarioAcceso.TabIndex = 8;
             // 
             // txtContrasena
             // 
-            txtContrasena.Location = new Point(184, 163);
+            txtContrasena.Location = new Point(161, 163);
+            txtContrasena.Margin = new Padding(3, 2, 3, 2);
             txtContrasena.Name = "txtContrasena";
-            txtContrasena.Size = new Size(185, 27);
+            txtContrasena.Size = new Size(162, 23);
             txtContrasena.TabIndex = 9;
             txtContrasena.UseSystemPasswordChar = true;
             // 
@@ -157,20 +168,22 @@
             // 
             cmbNivelAcceso.FormattingEnabled = true;
             cmbNivelAcceso.Items.AddRange(new object[] { "1", "2", "3" });
-            cmbNivelAcceso.Location = new Point(184, 200);
+            cmbNivelAcceso.Location = new Point(159, 201);
+            cmbNivelAcceso.Margin = new Padding(3, 2, 3, 2);
             cmbNivelAcceso.Name = "cmbNivelAcceso";
-            cmbNivelAcceso.Size = new Size(77, 28);
+            cmbNivelAcceso.Size = new Size(68, 23);
             cmbNivelAcceso.TabIndex = 10;
             // 
             // FrmAdministrador
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(622, 313);
+            ClientSize = new Size(544, 235);
             Name = "FrmAdministrador";
             Text = "FrmAdministrador";
             pnlFormularioBase.ResumeLayout(false);
             pnlFormularioBase.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).EndInit();
             ResumeLayout(false);
         }
 

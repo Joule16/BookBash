@@ -1,8 +1,8 @@
-//   Equipo #2
+//   Equipo 2
 //   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-// ===============================
+// =============================
 using MySqlConnector;
 using System;
 using System.Collections.Generic;

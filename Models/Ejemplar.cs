@@ -1,8 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel
-//Nuñes Martinez Marco Antonio
-//Equipo 2
-//=============================
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using SistemaBiblioteca1.Datos;
 using System.Collections.Generic;
@@ -119,6 +119,18 @@ namespace SistemaBiblioteca1.Models
                 default:
                     return 0.0;
             }
+        }
+
+        public static List<Ejemplar> ObtenerTodos()
+        {
+            return listaEjemplares.OrderBy(e => e.Id).ToList();
+        }
+
+        public static void ContarDeLibro(int idLibro, out int total, out int disponibles)
+        {
+            List<Ejemplar> delLibro = listaEjemplares.Where(e => e.IdLibro == idLibro && e.EsActivo).ToList();
+            total = delLibro.Count;
+            disponibles = delLibro.Count(e => e.Disponible);
         }
 
         internal static void CargarDesdeBD(IEnumerable<Ejemplar> registros)

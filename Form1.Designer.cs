@@ -1,4 +1,9 @@
-﻿namespace SistemaBiblioteca1
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
+namespace SistemaBiblioteca1
 {
     partial class Form1
     {

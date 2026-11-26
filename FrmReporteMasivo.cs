@@ -1,8 +1,9 @@
-﻿// Actividad 3.4 - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
+// Actividad 3.4
 using SistemaBiblioteca1.Models;
 using System;
 using System.Collections.Generic;
@@ -266,6 +267,10 @@ namespace SistemaBiblioteca1
                 return true;
 
             ActualizarEstado("Corrige los campos marcados antes de iniciar.");
+            MessageBox.Show("Corrige los campos marcados antes de iniciar:\n\n" +
+                            (cantidadValida ? "" : "• " + epParametros.GetError(nudCantidad) + "\n") +
+                            (retardoValido ? "" : "• " + epParametros.GetError(nudRetardo)),
+                            "Parámetros no válidos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             if (!cantidadValida)
                 nudCantidad.Focus();
             else

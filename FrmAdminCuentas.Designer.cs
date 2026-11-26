@@ -1,8 +1,8 @@
-﻿// Proyecto Biblioteca - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
 namespace SistemaBiblioteca1
 {
     partial class FrmAdminCuentas
@@ -35,120 +35,154 @@ namespace SistemaBiblioteca1
             btnRecargarCuentas = new BotonPersona3();
             ((System.ComponentModel.ISupportInitialize)dgvCuentas).BeginInit();
             SuspendLayout();
-
+            // 
+            // lblTituloCuentas
+            // 
             lblTituloCuentas.AutoSize = true;
-            lblTituloCuentas.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTituloCuentas.Location = new Point(16, 12);
+            lblTituloCuentas.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblTituloCuentas.Location = new Point(14, 9);
             lblTituloCuentas.Margin = new Padding(2, 0, 2, 0);
             lblTituloCuentas.Name = "lblTituloCuentas";
-            lblTituloCuentas.Size = new Size(210, 32);
+            lblTituloCuentas.Size = new Size(182, 25);
             lblTituloCuentas.TabIndex = 0;
             lblTituloCuentas.Text = "Cuentas de usuario";
-
+            // 
+            // dgvCuentas
+            // 
             dgvCuentas.AllowUserToAddRows = false;
             dgvCuentas.AllowUserToDeleteRows = false;
             dgvCuentas.AllowUserToResizeRows = false;
             dgvCuentas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvCuentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvCuentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCuentas.Location = new Point(16, 56);
-            dgvCuentas.Margin = new Padding(2, 2, 2, 2);
+            dgvCuentas.Location = new Point(14, 42);
+            dgvCuentas.Margin = new Padding(2);
             dgvCuentas.MultiSelect = false;
             dgvCuentas.Name = "dgvCuentas";
             dgvCuentas.ReadOnly = true;
             dgvCuentas.RowHeadersVisible = false;
             dgvCuentas.RowHeadersWidth = 51;
             dgvCuentas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCuentas.Size = new Size(828, 300);
+            dgvCuentas.Size = new Size(724, 225);
             dgvCuentas.TabIndex = 1;
-
+            // 
+            // lblResumenCuentas
+            // 
             lblResumenCuentas.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblResumenCuentas.AutoSize = true;
-            lblResumenCuentas.Location = new Point(16, 366);
+            lblResumenCuentas.Location = new Point(14, 274);
             lblResumenCuentas.Margin = new Padding(2, 0, 2, 0);
             lblResumenCuentas.Name = "lblResumenCuentas";
-            lblResumenCuentas.Size = new Size(86, 20);
+            lblResumenCuentas.Size = new Size(44, 15);
             lblResumenCuentas.TabIndex = 2;
             lblResumenCuentas.Text = "Total: 0";
-
+            // 
+            // lblMensajeCuentas
+            // 
             lblMensajeCuentas.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblMensajeCuentas.Location = new Point(16, 392);
+            lblMensajeCuentas.Location = new Point(14, 294);
             lblMensajeCuentas.Margin = new Padding(2, 0, 2, 0);
             lblMensajeCuentas.Name = "lblMensajeCuentas";
-            lblMensajeCuentas.Size = new Size(828, 24);
+            lblMensajeCuentas.Size = new Size(724, 18);
             lblMensajeCuentas.TabIndex = 3;
-
+            // 
+            // lblMotivoBaneo
+            // 
             lblMotivoBaneo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblMotivoBaneo.AutoSize = true;
-            lblMotivoBaneo.Location = new Point(16, 432);
+            lblMotivoBaneo.Location = new Point(14, 322);
             lblMotivoBaneo.Margin = new Padding(2, 0, 2, 0);
             lblMotivoBaneo.Name = "lblMotivoBaneo";
-            lblMotivoBaneo.Size = new Size(131, 20);
+            lblMotivoBaneo.Size = new Size(103, 15);
             lblMotivoBaneo.TabIndex = 4;
             lblMotivoBaneo.Text = "Motivo del baneo:";
-
+            // 
+            // txtMotivoBaneo
+            // 
             txtMotivoBaneo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtMotivoBaneo.Location = new Point(160, 428);
-            txtMotivoBaneo.Margin = new Padding(2, 2, 2, 2);
+            txtMotivoBaneo.Location = new Point(142, 314);
+            txtMotivoBaneo.Margin = new Padding(2);
             txtMotivoBaneo.MaxLength = 200;
             txtMotivoBaneo.Name = "txtMotivoBaneo";
             txtMotivoBaneo.PlaceholderText = "Obligatorio para banear";
-            txtMotivoBaneo.Size = new Size(684, 27);
+            txtMotivoBaneo.Size = new Size(599, 23);
             txtMotivoBaneo.TabIndex = 5;
-
+            // 
+            // btnActivarCuenta
+            // 
             btnActivarCuenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnActivarCuenta.Location = new Point(16, 468);
-            btnActivarCuenta.Margin = new Padding(2, 2, 2, 2);
+            btnActivarCuenta.FlatStyle = FlatStyle.Flat;
+            btnActivarCuenta.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Italic);
+            btnActivarCuenta.Location = new Point(14, 351);
+            btnActivarCuenta.Margin = new Padding(2);
             btnActivarCuenta.Name = "btnActivarCuenta";
-            btnActivarCuenta.Size = new Size(150, 38);
+            btnActivarCuenta.Size = new Size(131, 28);
             btnActivarCuenta.TabIndex = 6;
             btnActivarCuenta.Text = "Activar";
             btnActivarCuenta.UseVisualStyleBackColor = true;
             btnActivarCuenta.Click += btnActivarCuenta_Click;
-
+            // 
+            // btnDesactivarCuenta
+            // 
             btnDesactivarCuenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnDesactivarCuenta.Location = new Point(176, 468);
-            btnDesactivarCuenta.Margin = new Padding(2, 2, 2, 2);
+            btnDesactivarCuenta.FlatStyle = FlatStyle.Flat;
+            btnDesactivarCuenta.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Italic);
+            btnDesactivarCuenta.Location = new Point(154, 351);
+            btnDesactivarCuenta.Margin = new Padding(2);
             btnDesactivarCuenta.Name = "btnDesactivarCuenta";
-            btnDesactivarCuenta.Size = new Size(150, 38);
+            btnDesactivarCuenta.Size = new Size(131, 28);
             btnDesactivarCuenta.TabIndex = 7;
             btnDesactivarCuenta.Text = "Desactivar";
             btnDesactivarCuenta.UseVisualStyleBackColor = true;
             btnDesactivarCuenta.Click += btnDesactivarCuenta_Click;
-
+            // 
+            // btnBanearCuenta
+            // 
             btnBanearCuenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnBanearCuenta.Location = new Point(336, 468);
-            btnBanearCuenta.Margin = new Padding(2, 2, 2, 2);
+            btnBanearCuenta.FlatStyle = FlatStyle.Flat;
+            btnBanearCuenta.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Italic);
+            btnBanearCuenta.Location = new Point(294, 351);
+            btnBanearCuenta.Margin = new Padding(2);
             btnBanearCuenta.Name = "btnBanearCuenta";
-            btnBanearCuenta.Size = new Size(150, 38);
+            btnBanearCuenta.Size = new Size(131, 28);
             btnBanearCuenta.TabIndex = 8;
             btnBanearCuenta.Text = "Banear";
             btnBanearCuenta.UseVisualStyleBackColor = true;
             btnBanearCuenta.Click += btnBanearCuenta_Click;
-
+            // 
+            // btnQuitarBaneoCuenta
+            // 
             btnQuitarBaneoCuenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnQuitarBaneoCuenta.Location = new Point(496, 468);
-            btnQuitarBaneoCuenta.Margin = new Padding(2, 2, 2, 2);
+            btnQuitarBaneoCuenta.FlatStyle = FlatStyle.Flat;
+            btnQuitarBaneoCuenta.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Italic);
+            btnQuitarBaneoCuenta.Location = new Point(434, 351);
+            btnQuitarBaneoCuenta.Margin = new Padding(2);
             btnQuitarBaneoCuenta.Name = "btnQuitarBaneoCuenta";
-            btnQuitarBaneoCuenta.Size = new Size(160, 38);
+            btnQuitarBaneoCuenta.Size = new Size(140, 28);
             btnQuitarBaneoCuenta.TabIndex = 9;
             btnQuitarBaneoCuenta.Text = "Quitar baneo";
             btnQuitarBaneoCuenta.UseVisualStyleBackColor = true;
             btnQuitarBaneoCuenta.Click += btnQuitarBaneoCuenta_Click;
-
+            // 
+            // btnRecargarCuentas
+            // 
             btnRecargarCuentas.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnRecargarCuentas.Location = new Point(666, 468);
-            btnRecargarCuentas.Margin = new Padding(2, 2, 2, 2);
+            btnRecargarCuentas.FlatStyle = FlatStyle.Flat;
+            btnRecargarCuentas.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Italic);
+            btnRecargarCuentas.Location = new Point(583, 351);
+            btnRecargarCuentas.Margin = new Padding(2);
             btnRecargarCuentas.Name = "btnRecargarCuentas";
-            btnRecargarCuentas.Size = new Size(170, 38);
+            btnRecargarCuentas.Size = new Size(149, 28);
             btnRecargarCuentas.TabIndex = 10;
             btnRecargarCuentas.Text = "Actualizar lista";
             btnRecargarCuentas.UseVisualStyleBackColor = true;
             btnRecargarCuentas.Click += btnRecargarCuentas_Click;
-
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            // 
+            // FrmAdminCuentas
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(860, 524);
+            ClientSize = new Size(752, 393);
             Controls.Add(lblTituloCuentas);
             Controls.Add(dgvCuentas);
             Controls.Add(lblResumenCuentas);
@@ -160,7 +194,7 @@ namespace SistemaBiblioteca1
             Controls.Add(btnBanearCuenta);
             Controls.Add(btnQuitarBaneoCuenta);
             Controls.Add(btnRecargarCuentas);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "FrmAdminCuentas";
             Text = "Administración - Cuentas de usuario";
             ((System.ComponentModel.ISupportInitialize)dgvCuentas).EndInit();

@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +26,8 @@ namespace SistemaBiblioteca1
 
             ConfigurarCampoEntero(txtIdEjemplarAgregar, "ID del usuario");
             ConfigurarCampoEntero(txtIdEjemplarPrestamo, "ID del ejemplar");
+            txtIdEjemplarAgregar.MaxLength = LONGITUD_MAXIMA_ID;
+            txtIdEjemplarPrestamo.MaxLength = LONGITUD_MAXIMA_ID;
             btnAgregarDetalle.CausesValidation = false;
             btnEliminarDetalle.CausesValidation = false;
             btnVaciarDetalle.CausesValidation = false;
@@ -71,7 +74,7 @@ namespace SistemaBiblioteca1
 
                 if (prestamo == null)
                 {
-                    alerta.SetError(txtId, "No existe un préstamo con ese id.");
+                    MostrarErrorBusqueda(alerta, "No existe un préstamo con ese id.");
                     return;
                 }
 
@@ -85,7 +88,7 @@ namespace SistemaBiblioteca1
             }
             catch (ArgumentException ex)
             {
-                alerta.SetError(txtId, ex.Message);
+                MostrarErrorBusqueda(alerta, ex.Message);
             }
         }
 

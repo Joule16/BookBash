@@ -1,9 +1,10 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel
-//Nuñes Martinez Marco Antonio
-//Equipo 2
-//=============================
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
+using System.IO;
 using SistemaBiblioteca1.Datos;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,9 @@ namespace SistemaBiblioteca1.Models
         private int idEditorial;
         private int anioPublicacion;
         private string puntoEntrega;
+        private int? idPropietario;
+        private string rutaImagen;
+        private decimal precio;
 
         public int IdLibro
         {
@@ -108,6 +112,43 @@ namespace SistemaBiblioteca1.Models
             }
         }
 
+        public int? IdPropietario
+        {
+            get { return idPropietario; }
+            set
+            {
+                if (value.HasValue && value.Value <= 0)
+                    throw new ArgumentException("El propietario del libro no es válido.");
+                idPropietario = value;
+            }
+        }
+
+        public string RutaImagen
+        {
+            get { return rutaImagen; }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value) && Path.IsPathRooted(value))
+                    throw new ArgumentException("La ruta de la imagen debe ser relativa, no una ruta absoluta.");
+                rutaImagen = string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+            }
+        }
+
+        public decimal Precio
+        {
+            get { return precio; }
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("El precio no puede ser negativo.");
+                if (value > 99999999.99m)
+                    throw new ArgumentException("El precio máximo permitido es 99,999,999.99.");
+                if (decimal.Round(value, 2) != value)
+                    throw new ArgumentException("El precio solo admite hasta 2 decimales.");
+                precio = value;
+            }
+        }
+
         public bool Estado
         {
             get { return EsActivo; }
@@ -123,11 +164,15 @@ namespace SistemaBiblioteca1.Models
             idEditorial = 0;
             anioPublicacion = DateTime.Now.Year;
             puntoEntrega = string.Empty;
+            idPropietario = null;
+            rutaImagen = string.Empty;
+            precio = 0m;
             EsActivo = false;
         }
 
         public Libro(int idLibro, string titulo, string isbn, int idAutor, int idCategoria,
-                     int idEditorial, int anioPublicacion, bool estado, string puntoEntrega = "") : base(idLibro)
+                     int idEditorial, int anioPublicacion, bool estado, string puntoEntrega = "",
+                     int? idPropietario = null, string rutaImagen = "", decimal precio = 0m) : base(idLibro)
         {
             Titulo = titulo;
             Isbn = isbn;
@@ -136,6 +181,9 @@ namespace SistemaBiblioteca1.Models
             IdEditorial = idEditorial;
             AnioPublicacion = anioPublicacion;
             PuntoEntrega = puntoEntrega;
+            IdPropietario = idPropietario;
+            RutaImagen = rutaImagen;
+            Precio = precio;
             EsActivo = estado;
         }
 
@@ -156,13 +204,17 @@ namespace SistemaBiblioteca1.Models
             return listaLibros.OrderBy(x => x.Id).ToList();
         }
 
+        public static List<Libro> ObtenerActivos()
+        {
+            return listaLibros.Where(x => x.EsActivo).OrderBy(x => x.Id).ToList();
+        }
+
         public void DarDeBaja()
         {
             if (!EsActivo)
                 throw new InvalidOperationException("El libro ya está dado de baja.");
 
-            EsActivo = false;
-            GuardarCambiosEnBD();
+            CambiarEstado(false);
         }
 
         public void Restaurar()
@@ -170,8 +222,47 @@ namespace SistemaBiblioteca1.Models
             if (EsActivo)
                 throw new InvalidOperationException("El libro ya está disponible en el catálogo.");
 
-            EsActivo = true;
-            GuardarCambiosEnBD();
+            CambiarEstado(true);
+        }
+
+        private void CambiarEstado(bool nuevoEstado)
+        {
+            bool anterior = EsActivo;
+            EsActivo = nuevoEstado;
+
+            if (!ConexionBD.Habilitada || !listaLibros.Contains(this))
+                return;
+
+            try
+            {
+                RepositorioBD.Actualizar(this);
+            }
+            catch
+            {
+                EsActivo = anterior;
+                throw;
+            }
+
+            try
+            {
+                ConexionMongo.CambiarEstadoLibro(this);
+            }
+            catch (InvalidOperationException ex)
+            {
+                EsActivo = anterior;
+                try
+                {
+                    RepositorioBD.Actualizar(this);
+                }
+                catch (InvalidOperationException exRevertir)
+                {
+                    throw new InvalidOperationException(
+                        "El estado no cambió en MongoDB y tampoco se pudo revertir MariaDB:\n" +
+                        ex.Message + "\n" + exRevertir.Message, ex);
+                }
+
+                throw new InvalidOperationException("El cambio de estado no se aplicó porque falló MongoDB:\n" + ex.Message, ex);
+            }
         }
 
         internal static void CargarDesdeBD(IEnumerable<Libro> registros)
@@ -198,8 +289,25 @@ namespace SistemaBiblioteca1.Models
                 throw new InvalidOperationException($"Ya existe un libro con el id {libro.Id}.");
 
             RepositorioBD.Insertar(libro);
+            GuardarEnMongo(libro);
 
             listaLibros.Add(libro);
+        }
+
+        private static void GuardarEnMongo(Libro libro)
+        {
+            if (!ConexionBD.Habilitada)
+                return;
+
+            try
+            {
+                ConexionMongo.InsertarLibro(libro);
+            }
+            catch (InvalidOperationException ex)
+            {
+                RepositorioBD.Eliminar("Libro", "IdLibro", libro.Id);
+                throw new InvalidOperationException("El libro no se guardó porque falló MongoDB:\n" + ex.Message, ex);
+            }
         }
 
         public object ConsultarRegistro(string id)
@@ -220,9 +328,38 @@ namespace SistemaBiblioteca1.Models
             if (indice == -1)
                 throw new InvalidOperationException($"No existe un libro con el id {libro.Id}.");
 
+            Libro anterior = listaLibros[indice];
+
             RepositorioBD.Actualizar(libro);
+            ActualizarEnMongo(libro, anterior);
 
             listaLibros[indice] = libro;
+        }
+
+        private static void ActualizarEnMongo(Libro nuevo, Libro anterior)
+        {
+            if (!ConexionBD.Habilitada)
+                return;
+
+            try
+            {
+                ConexionMongo.ActualizarLibro(nuevo);
+            }
+            catch (InvalidOperationException ex)
+            {
+                try
+                {
+                    RepositorioBD.Actualizar(anterior);
+                }
+                catch (InvalidOperationException exRevertir)
+                {
+                    throw new InvalidOperationException(
+                        "El libro no se actualizó en MongoDB y tampoco se pudo revertir MariaDB:\n" +
+                        ex.Message + "\n" + exRevertir.Message, ex);
+                }
+
+                throw new InvalidOperationException("El libro no se actualizó porque falló MongoDB:\n" + ex.Message, ex);
+            }
         }
 
         public void EliminarRegistro(string id)
@@ -233,7 +370,32 @@ namespace SistemaBiblioteca1.Models
             if (indice == -1)
                 throw new InvalidOperationException($"No existe un libro con el id {idBuscado}.");
 
+            Libro libro = listaLibros[indice];
+
             RepositorioBD.Eliminar("Libro", "IdLibro", idBuscado);
+
+            if (ConexionBD.Habilitada)
+            {
+                try
+                {
+                    ConexionMongo.EliminarLibro(idBuscado);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    try
+                    {
+                        RepositorioBD.Insertar(libro);
+                    }
+                    catch (InvalidOperationException exRevertir)
+                    {
+                        throw new InvalidOperationException(
+                            "El libro se eliminó de MariaDB pero no de MongoDB, y no se pudo restaurar:\n" +
+                            ex.Message + "\n" + exRevertir.Message, ex);
+                    }
+
+                    throw new InvalidOperationException("El libro no se eliminó porque falló MongoDB:\n" + ex.Message, ex);
+                }
+            }
 
             listaLibros.RemoveAt(indice);
         }
@@ -250,6 +412,7 @@ namespace SistemaBiblioteca1.Models
             string entrega = puntoEntrega.Length > 0 ? puntoEntrega : "ciudad del dueño";
             return $"Libro #{Id}: {titulo} | ISBN: {isbn} | Año: {anioPublicacion} | " +
                    $"Entrega: {entrega} | " +
+                   $"Precio: {precio:0.00} | " +
                    $"Estado: {(EsActivo ? "Disponible en catálogo" : "Dado de baja")}";
         }
     }

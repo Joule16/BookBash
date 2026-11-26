@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel
-//Nuñez Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -230,6 +231,9 @@ namespace SistemaBiblioteca1
         {
             lblMensajeCuentas.ForeColor = esError ? Color.FromArgb(255, 107, 107) : Color.FromArgb(0, 212, 255);
             lblMensajeCuentas.Text = mensaje;
+
+            if (esError)
+                MessageBox.Show(mensaje, "Cuentas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void btnActivarCuenta_Click(object? sender, EventArgs e)

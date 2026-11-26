@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,9 +20,14 @@ namespace SistemaBiblioteca1
         public FrmSancion()
         {
             InitializeComponent();
+            txtMotivoSancion.MaxLength = LimitesCampos.Motivo;
+            txtDiasRetraso.MaxLength = LimitesCampos.DiasRetraso;
+            txtPorcentajePenalizacion.MaxLength = LimitesCampos.Porcentaje;
 
             ConfigurarCampoEntero(txtIdUsuarioSancion, "ID del usuario");
             ConfigurarCampoEntero(txtIdPrestamoSancion, "ID del préstamo");
+            txtIdUsuarioSancion.MaxLength = LONGITUD_MAXIMA_ID;
+            txtIdPrestamoSancion.MaxLength = LONGITUD_MAXIMA_ID;
             ConfigurarCampoLetras(txtMotivoSancion, "Motivo");
             ConfigurarCampoEntero(txtDiasRetraso, "Días de retraso");
             ConfigurarCampoDecimal(txtPorcentajePenalizacion, "Porcentaje de penalización", t => (double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out double p) && p >= 0 && p <= 1) ? null : "El porcentaje debe estar entre 0 y 1 (por ejemplo 0.20).");
@@ -61,7 +67,7 @@ namespace SistemaBiblioteca1
 
                 if (sancion == null)
                 {
-                    alerta.SetError(txtId, "No existe una sanción con ese id.");
+                    MostrarErrorBusqueda(alerta, "No existe una sanción con ese id.");
                     return;
                 }
 
@@ -77,7 +83,7 @@ namespace SistemaBiblioteca1
             }
             catch (ArgumentException ex)
             {
-                alerta.SetError(txtId, ex.Message);
+                MostrarErrorBusqueda(alerta, ex.Message);
             }
         }
 
@@ -128,6 +134,7 @@ namespace SistemaBiblioteca1
             }
             catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
             {
+                MessageBox.Show(ex.Message, "No se pudo eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 MostrarEstado(barraEstado, ex.Message);
             }
         }

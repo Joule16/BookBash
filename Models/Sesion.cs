@@ -1,8 +1,8 @@
-﻿//NUÑEZ Martinez Marco Antonio
-//SUÑIGA Maciel Joule Alexander
-//VILLA Olivarez Ariel
-//Equipo 2
-//=============================
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using SistemaBiblioteca1.Models;
 
@@ -22,6 +22,27 @@ namespace SistemaBiblioteca1
             get { return SesionSistema.RolActivo == UsuariosSistema.ROL_ADMINISTRADOR; }
         }
 
+        public static bool EsModerador
+        {
+            get { return SesionSistema.RolActivo == UsuariosSistema.ROL_MODERADOR; }
+        }
+
+        public static bool EsUsuario
+        {
+            get { return SesionSistema.RolActivo == UsuariosSistema.ROL_USUARIO; }
+        }
+
+        public static bool EsInvitado
+        {
+            get { return SesionSistema.RolActivo == UsuariosSistema.ROL_INVITADO; }
+        }
+
+        public static void IniciarInvitado()
+        {
+            UsuarioActual = null;
+            SesionSistema.Iniciar("Invitado", UsuariosSistema.ROL_INVITADO);
+        }
+
         public static void Iniciar(Usuario usuario)
         {
             if (usuario == null)
@@ -31,7 +52,7 @@ namespace SistemaBiblioteca1
 
             string rol = usuario.EsAdministrador()
                 ? UsuariosSistema.ROL_ADMINISTRADOR
-                : UsuariosSistema.ROL_OPERADOR;
+                : UsuariosSistema.ROL_USUARIO;
 
             SesionSistema.Iniciar(usuario.Nombre + " " + usuario.Apellido, rol);
         }

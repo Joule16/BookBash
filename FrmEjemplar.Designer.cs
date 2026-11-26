@@ -1,4 +1,9 @@
-﻿namespace SistemaBiblioteca1
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
+namespace SistemaBiblioteca1
 {
     partial class FrmEjemplar
     {
@@ -37,6 +42,7 @@
             chkEstadoEjemplar = new CheckBox();
             cmbCondicion = new ComboBox();
             pnlFormularioBase.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).BeginInit();
             SuspendLayout();
             // 
             // pnlFormularioBase
@@ -49,7 +55,7 @@
             pnlFormularioBase.Controls.Add(txtIdLIbroEjemplar);
             pnlFormularioBase.Controls.Add(lblCodigoInventario);
             pnlFormularioBase.Controls.Add(lblIdLibroEjemplar);
-            pnlFormularioBase.Size = new Size(622, 313);
+            pnlFormularioBase.Size = new Size(544, 235);
             pnlFormularioBase.Controls.SetChildIndex(txtId, 0);
             pnlFormularioBase.Controls.SetChildIndex(lblId, 0);
             pnlFormularioBase.Controls.SetChildIndex(lblIdLibroEjemplar, 0);
@@ -61,57 +67,64 @@
             pnlFormularioBase.Controls.SetChildIndex(txtCodigoInventario, 0);
             pnlFormularioBase.Controls.SetChildIndex(cmbCondicion, 0);
             // 
+            // lblId
+            // 
+            lblId.Location = new Point(14, 36);
+            // 
             // txtId
             // 
-            txtId.Location = new Point(170, 17);
+            txtId.Location = new Point(149, 28);
             // 
             // lblIdLibroEjemplar
             // 
             lblIdLibroEjemplar.AutoSize = true;
-            lblIdLibroEjemplar.Location = new Point(12, 63);
+            lblIdLibroEjemplar.Location = new Point(14, 74);
             lblIdLibroEjemplar.Name = "lblIdLibroEjemplar";
-            lblIdLibroEjemplar.Size = new Size(65, 20);
+            lblIdLibroEjemplar.Size = new Size(51, 15);
             lblIdLibroEjemplar.TabIndex = 0;
             lblIdLibroEjemplar.Text = "ID Libro:";
             // 
             // lblCodigoInventario
             // 
             lblCodigoInventario.AutoSize = true;
-            lblCodigoInventario.Location = new Point(12, 103);
+            lblCodigoInventario.Location = new Point(10, 105);
             lblCodigoInventario.Name = "lblCodigoInventario";
-            lblCodigoInventario.Size = new Size(131, 20);
+            lblCodigoInventario.Size = new Size(105, 15);
             lblCodigoInventario.TabIndex = 1;
             lblCodigoInventario.Text = "Codigo Inventario:";
             // 
             // txtIdLIbroEjemplar
             // 
-            txtIdLIbroEjemplar.Location = new Point(170, 60);
+            txtIdLIbroEjemplar.Location = new Point(149, 66);
+            txtIdLIbroEjemplar.Margin = new Padding(3, 2, 3, 2);
             txtIdLIbroEjemplar.Name = "txtIdLIbroEjemplar";
-            txtIdLIbroEjemplar.Size = new Size(185, 27);
+            txtIdLIbroEjemplar.Size = new Size(162, 23);
             txtIdLIbroEjemplar.TabIndex = 2;
             // 
             // txtCodigoInventario
             // 
-            txtCodigoInventario.Location = new Point(170, 100);
+            txtCodigoInventario.Location = new Point(149, 97);
+            txtCodigoInventario.Margin = new Padding(3, 2, 3, 2);
             txtCodigoInventario.Name = "txtCodigoInventario";
-            txtCodigoInventario.Size = new Size(185, 27);
+            txtCodigoInventario.Size = new Size(162, 23);
             txtCodigoInventario.TabIndex = 3;
             // 
             // lblCondicion
             // 
             lblCondicion.AutoSize = true;
-            lblCondicion.Location = new Point(12, 148);
+            lblCondicion.Location = new Point(10, 140);
             lblCondicion.Name = "lblCondicion";
-            lblCondicion.Size = new Size(79, 20);
+            lblCondicion.Size = new Size(65, 15);
             lblCondicion.TabIndex = 4;
             lblCondicion.Text = "Condición:";
             // 
             // chkDisponible
             // 
             chkDisponible.AutoSize = true;
-            chkDisponible.Location = new Point(170, 197);
+            chkDisponible.Location = new Point(149, 169);
+            chkDisponible.Margin = new Padding(3, 2, 3, 2);
             chkDisponible.Name = "chkDisponible";
-            chkDisponible.Size = new Size(103, 24);
+            chkDisponible.Size = new Size(82, 19);
             chkDisponible.TabIndex = 6;
             chkDisponible.Text = "Disponible";
             chkDisponible.UseVisualStyleBackColor = true;
@@ -119,10 +132,11 @@
             // chkEstadoEjemplar
             // 
             chkEstadoEjemplar.AutoSize = true;
-            chkEstadoEjemplar.Location = new Point(170, 242);
+            chkEstadoEjemplar.Location = new Point(251, 169);
+            chkEstadoEjemplar.Margin = new Padding(3, 2, 3, 2);
             chkEstadoEjemplar.Name = "chkEstadoEjemplar";
             chkEstadoEjemplar.RightToLeft = RightToLeft.No;
-            chkEstadoEjemplar.Size = new Size(73, 24);
+            chkEstadoEjemplar.Size = new Size(60, 19);
             chkEstadoEjemplar.TabIndex = 7;
             chkEstadoEjemplar.Text = "Activo";
             chkEstadoEjemplar.UseVisualStyleBackColor = true;
@@ -131,21 +145,23 @@
             // 
             cmbCondicion.FormattingEnabled = true;
             cmbCondicion.Items.AddRange(new object[] { "Nuevo", "Bueno", "Regular", "Dañado" });
-            cmbCondicion.Location = new Point(170, 145);
+            cmbCondicion.Location = new Point(149, 132);
+            cmbCondicion.Margin = new Padding(3, 2, 3, 2);
             cmbCondicion.Name = "cmbCondicion";
-            cmbCondicion.Size = new Size(185, 28);
+            cmbCondicion.Size = new Size(162, 23);
             cmbCondicion.TabIndex = 8;
             // 
             // FrmEjemplar
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(622, 313);
+            ClientSize = new Size(544, 235);
             Name = "FrmEjemplar";
             Text = "FrmEjemplar";
             Load += FrmEjemplar_Load;
             pnlFormularioBase.ResumeLayout(false);
             pnlFormularioBase.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).EndInit();
             ResumeLayout(false);
         }
 

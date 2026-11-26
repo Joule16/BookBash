@@ -1,8 +1,9 @@
-﻿// Actividad 3.4 - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
+// Actividad 3.4
 using System;
 using System.Diagnostics;
 using System.Threading;

@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,9 @@ namespace SistemaBiblioteca1
         public FrmUsuario()
         {
             InitializeComponent();
+            txtNombreUsuario.MaxLength = LimitesCampos.Nombre;
+            txtApellidoUsuario.MaxLength = LimitesCampos.Nombre;
+            txtEmailUsuario.MaxLength = LimitesCampos.Email;
 
             ConfigurarCampoLetras(txtNombreUsuario, "Nombre");
             ConfigurarCampoLetras(txtApellidoUsuario, "Apellido");
@@ -27,6 +31,13 @@ namespace SistemaBiblioteca1
             ConfigurarCampoLista(cmbRolUsuario, "Rol");
 
             txtContrasenaUsuario.TextChanged += (s, e) => epValidaciones.SetError(txtContrasenaUsuario, "");
+
+            txtIdUniversitarioUsuario.MaxLength = 9;
+            txtIdUniversitarioUsuario.KeyPress += (s, e) =>
+            {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                    e.Handled = true;
+            };
         }
 
         public void EjecutarGuardar()
@@ -64,7 +75,7 @@ namespace SistemaBiblioteca1
 
                 if (usuario == null)
                 {
-                    alerta.SetError(txtId, "No existe un usuario con ese id.");
+                    MostrarErrorBusqueda(alerta, "No existe un usuario con ese id.");
                     return;
                 }
 
@@ -81,7 +92,7 @@ namespace SistemaBiblioteca1
             }
             catch (ArgumentException ex)
             {
-                alerta.SetError(txtId, ex.Message);
+                MostrarErrorBusqueda(alerta, ex.Message);
             }
         }
 
@@ -102,8 +113,10 @@ namespace SistemaBiblioteca1
                 {
                     usuario.ContadorSanciones = existente.ContadorSanciones;
                     usuario.EstaBaneado = existente.EstaBaneado;
+                    usuario.MotivoBaneo = existente.MotivoBaneo;
                     usuario.FechaRegistro = existente.FechaRegistro;
                     usuario.ContrasenaHash = existente.ContrasenaHash;
+                    usuario.RutaImagen = existente.RutaImagen;
                 }
 
                 if (txtContrasenaUsuario.Text.Length > 0)
@@ -137,6 +150,7 @@ namespace SistemaBiblioteca1
             }
             catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
             {
+                MessageBox.Show(ex.Message, "No se pudo eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 MostrarEstado(barraEstado, ex.Message);
             }
         }

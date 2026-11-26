@@ -1,7 +1,8 @@
-﻿//Suñiga Maciel Joule Alexander
-//Villa Olivares Ariel 
-//Martinez Marco Antonio
-//Equipo 2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -103,7 +104,7 @@ namespace SistemaBiblioteca1
 
         private int AnchoCompleto
         {
-            get { return (int)Math.Round(AnchoBase * _factor); }
+            get { return (int)Math.Round(AnchoBase * _factor * DpiUI.Factor(this)); }
         }
 
         public MenuPersona3()
@@ -203,7 +204,7 @@ namespace SistemaBiblioteca1
             {
                 if (_items.Length == 0) return 0;
 
-                float tope = FilaBase * _factor;
+                float tope = FilaBase * _factor * DpiUI.Factor(this);
                 return (int)Math.Min(Height / (float)_items.Length, tope);
             }
         }
@@ -212,7 +213,7 @@ namespace SistemaBiblioteca1
         {
             get
             {
-                float k = Math.Min(AlturaFila / FilaBase, _factor);
+                float k = Math.Min(AlturaFila / (FilaBase * DpiUI.Factor(this)), _factor);
                 return Math.Max(0.7f, Math.Min(2.4f, k));
             }
         }
@@ -248,6 +249,18 @@ namespace SistemaBiblioteca1
             }
 
             return _fuente;
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+
+            if (_expandido)
+            {
+                Width = AnchoCompleto;
+            }
+
+            Invalidate();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -313,7 +326,7 @@ namespace SistemaBiblioteca1
             float desfaseSombra = 5f * k;
             int y0 = DesplazamientoY;
 
-            float anchoCompleto = AnchoBase * _factor;
+            float anchoCompleto = AnchoBase * _factor * DpiUI.Factor(this);
 
             using (var formato = new StringFormat
             {

@@ -1,8 +1,8 @@
-﻿// Proyecto Biblioteca - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
 namespace SistemaBiblioteca1
 {
     partial class FrmIntercambio
@@ -45,7 +45,8 @@ namespace SistemaBiblioteca1
             pnlFormularioBase.Controls.Add(dtpFechaConclusionIntercambio);
             pnlFormularioBase.Controls.Add(lblPuntoEncuentroIntercambio);
             pnlFormularioBase.Controls.Add(txtPuntoEncuentroIntercambio);
-            pnlFormularioBase.Size = new Size(800, 500);
+            pnlFormularioBase.Margin = new Padding(1, 1, 1, 1);
+            pnlFormularioBase.Size = new Size(560, 300);
             pnlFormularioBase.Controls.SetChildIndex(lblId, 0);
             pnlFormularioBase.Controls.SetChildIndex(txtPuntoEncuentroIntercambio, 0);
             pnlFormularioBase.Controls.SetChildIndex(lblPuntoEncuentroIntercambio, 0);
@@ -66,55 +67,57 @@ namespace SistemaBiblioteca1
             // 
             // lblId
             // 
-            lblId.Location = new Point(16, 20);
+            lblId.Location = new Point(11, 12);
+            lblId.Margin = new Padding(1, 0, 1, 0);
             // 
             // txtId
             // 
-            txtId.Location = new Point(230, 20);
+            txtId.Location = new Point(161, 12);
+            txtId.Margin = new Padding(1, 1, 1, 1);
             // 
             // lblIdUsuarioIntercambio
             // 
             lblIdUsuarioIntercambio.AutoSize = true;
-            lblIdUsuarioIntercambio.Location = new Point(20, 75);
-            lblIdUsuarioIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblIdUsuarioIntercambio.Location = new Point(14, 59);
+            lblIdUsuarioIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblIdUsuarioIntercambio.Name = "lblIdUsuarioIntercambio";
-            lblIdUsuarioIntercambio.Size = new Size(118, 25);
+            lblIdUsuarioIntercambio.Size = new Size(78, 15);
             lblIdUsuarioIntercambio.TabIndex = 2;
             lblIdUsuarioIntercambio.Text = "ID solicitante:";
             // 
             // txtIdUsuarioIntercambio
             // 
-            txtIdUsuarioIntercambio.Location = new Point(230, 72);
-            txtIdUsuarioIntercambio.Margin = new Padding(2);
+            txtIdUsuarioIntercambio.Location = new Point(161, 51);
+            txtIdUsuarioIntercambio.Margin = new Padding(1, 1, 1, 1);
             txtIdUsuarioIntercambio.Name = "txtIdUsuarioIntercambio";
-            txtIdUsuarioIntercambio.Size = new Size(230, 31);
+            txtIdUsuarioIntercambio.Size = new Size(162, 23);
             txtIdUsuarioIntercambio.TabIndex = 3;
             // 
             // lblIdLibroSolicitadoIntercambio
             // 
             lblIdLibroSolicitadoIntercambio.AutoSize = true;
-            lblIdLibroSolicitadoIntercambio.Location = new Point(20, 120);
-            lblIdLibroSolicitadoIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblIdLibroSolicitadoIntercambio.Location = new Point(14, 98);
+            lblIdLibroSolicitadoIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblIdLibroSolicitadoIntercambio.Name = "lblIdLibroSolicitadoIntercambio";
-            lblIdLibroSolicitadoIntercambio.Size = new Size(156, 25);
+            lblIdLibroSolicitadoIntercambio.Size = new Size(102, 15);
             lblIdLibroSolicitadoIntercambio.TabIndex = 4;
             lblIdLibroSolicitadoIntercambio.Text = "ID libro solicitado:";
             // 
             // txtIdLibroSolicitadoIntercambio
             // 
-            txtIdLibroSolicitadoIntercambio.Location = new Point(230, 118);
-            txtIdLibroSolicitadoIntercambio.Margin = new Padding(2);
+            txtIdLibroSolicitadoIntercambio.Location = new Point(161, 90);
+            txtIdLibroSolicitadoIntercambio.Margin = new Padding(1, 1, 1, 1);
             txtIdLibroSolicitadoIntercambio.Name = "txtIdLibroSolicitadoIntercambio";
-            txtIdLibroSolicitadoIntercambio.Size = new Size(230, 31);
+            txtIdLibroSolicitadoIntercambio.Size = new Size(162, 23);
             txtIdLibroSolicitadoIntercambio.TabIndex = 5;
             // 
             // chkDonacionIntercambio
             // 
             chkDonacionIntercambio.AutoSize = true;
-            chkDonacionIntercambio.Location = new Point(230, 165);
-            chkDonacionIntercambio.Margin = new Padding(2);
+            chkDonacionIntercambio.Location = new Point(364, 16);
+            chkDonacionIntercambio.Margin = new Padding(1, 1, 1, 1);
             chkDonacionIntercambio.Name = "chkDonacionIntercambio";
-            chkDonacionIntercambio.Size = new Size(290, 29);
+            chkDonacionIntercambio.Size = new Size(195, 19);
             chkDonacionIntercambio.TabIndex = 6;
             chkDonacionIntercambio.Text = "Es donación (sin libro a cambio)";
             chkDonacionIntercambio.UseVisualStyleBackColor = true;
@@ -122,47 +125,47 @@ namespace SistemaBiblioteca1
             // lblIdLibroOfrecidoIntercambio
             // 
             lblIdLibroOfrecidoIntercambio.AutoSize = true;
-            lblIdLibroOfrecidoIntercambio.Location = new Point(20, 210);
-            lblIdLibroOfrecidoIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblIdLibroOfrecidoIntercambio.Location = new Point(14, 138);
+            lblIdLibroOfrecidoIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblIdLibroOfrecidoIntercambio.Name = "lblIdLibroOfrecidoIntercambio";
-            lblIdLibroOfrecidoIntercambio.Size = new Size(146, 25);
+            lblIdLibroOfrecidoIntercambio.Size = new Size(95, 15);
             lblIdLibroOfrecidoIntercambio.TabIndex = 7;
             lblIdLibroOfrecidoIntercambio.Text = "ID libro ofrecido:";
             // 
             // txtIdLibroOfrecidoIntercambio
             // 
-            txtIdLibroOfrecidoIntercambio.Location = new Point(230, 208);
-            txtIdLibroOfrecidoIntercambio.Margin = new Padding(2);
+            txtIdLibroOfrecidoIntercambio.Location = new Point(161, 130);
+            txtIdLibroOfrecidoIntercambio.Margin = new Padding(1, 1, 1, 1);
             txtIdLibroOfrecidoIntercambio.Name = "txtIdLibroOfrecidoIntercambio";
-            txtIdLibroOfrecidoIntercambio.Size = new Size(230, 31);
+            txtIdLibroOfrecidoIntercambio.Size = new Size(162, 23);
             txtIdLibroOfrecidoIntercambio.TabIndex = 8;
             // 
             // lblFechaSolicitudIntercambio
             // 
             lblFechaSolicitudIntercambio.AutoSize = true;
-            lblFechaSolicitudIntercambio.Location = new Point(20, 255);
-            lblFechaSolicitudIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblFechaSolicitudIntercambio.Location = new Point(364, 54);
+            lblFechaSolicitudIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblFechaSolicitudIntercambio.Name = "lblFechaSolicitudIntercambio";
-            lblFechaSolicitudIntercambio.Size = new Size(157, 25);
+            lblFechaSolicitudIntercambio.Size = new Size(105, 15);
             lblFechaSolicitudIntercambio.TabIndex = 9;
             lblFechaSolicitudIntercambio.Text = "Fecha de solicitud:";
             // 
             // dtpFechaSolicitudIntercambio
             // 
             dtpFechaSolicitudIntercambio.Format = DateTimePickerFormat.Short;
-            dtpFechaSolicitudIntercambio.Location = new Point(230, 252);
-            dtpFechaSolicitudIntercambio.Margin = new Padding(2);
+            dtpFechaSolicitudIntercambio.Location = new Point(364, 98);
+            dtpFechaSolicitudIntercambio.Margin = new Padding(1, 1, 1, 1);
             dtpFechaSolicitudIntercambio.Name = "dtpFechaSolicitudIntercambio";
-            dtpFechaSolicitudIntercambio.Size = new Size(230, 31);
+            dtpFechaSolicitudIntercambio.Size = new Size(162, 23);
             dtpFechaSolicitudIntercambio.TabIndex = 10;
             // 
             // lblEstatusIntercambio
             // 
             lblEstatusIntercambio.AutoSize = true;
-            lblEstatusIntercambio.Location = new Point(20, 300);
-            lblEstatusIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblEstatusIntercambio.Location = new Point(14, 169);
+            lblEstatusIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblEstatusIntercambio.Name = "lblEstatusIntercambio";
-            lblEstatusIntercambio.Size = new Size(72, 25);
+            lblEstatusIntercambio.Size = new Size(47, 15);
             lblEstatusIntercambio.TabIndex = 11;
             lblEstatusIntercambio.Text = "Estatus:";
             // 
@@ -171,19 +174,19 @@ namespace SistemaBiblioteca1
             cmbEstatusIntercambio.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbEstatusIntercambio.FormattingEnabled = true;
             cmbEstatusIntercambio.Items.AddRange(new object[] { "Pendiente", "Aceptado", "Concluido", "Rechazado", "Cancelado" });
-            cmbEstatusIntercambio.Location = new Point(230, 298);
-            cmbEstatusIntercambio.Margin = new Padding(2);
+            cmbEstatusIntercambio.Location = new Point(161, 166);
+            cmbEstatusIntercambio.Margin = new Padding(1, 1, 1, 1);
             cmbEstatusIntercambio.Name = "cmbEstatusIntercambio";
-            cmbEstatusIntercambio.Size = new Size(230, 33);
+            cmbEstatusIntercambio.Size = new Size(162, 23);
             cmbEstatusIntercambio.TabIndex = 12;
             // 
             // lblFechaConclusionIntercambio
             // 
             lblFechaConclusionIntercambio.AutoSize = true;
-            lblFechaConclusionIntercambio.Location = new Point(20, 345);
-            lblFechaConclusionIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblFechaConclusionIntercambio.Location = new Point(364, 148);
+            lblFechaConclusionIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblFechaConclusionIntercambio.Name = "lblFechaConclusionIntercambio";
-            lblFechaConclusionIntercambio.Size = new Size(175, 25);
+            lblFechaConclusionIntercambio.Size = new Size(118, 15);
             lblFechaConclusionIntercambio.TabIndex = 13;
             lblFechaConclusionIntercambio.Text = "Fecha de conclusión:";
             // 
@@ -191,37 +194,38 @@ namespace SistemaBiblioteca1
             // 
             dtpFechaConclusionIntercambio.Checked = false;
             dtpFechaConclusionIntercambio.Format = DateTimePickerFormat.Short;
-            dtpFechaConclusionIntercambio.Location = new Point(230, 342);
-            dtpFechaConclusionIntercambio.Margin = new Padding(2);
+            dtpFechaConclusionIntercambio.Location = new Point(364, 185);
+            dtpFechaConclusionIntercambio.Margin = new Padding(1, 1, 1, 1);
             dtpFechaConclusionIntercambio.Name = "dtpFechaConclusionIntercambio";
             dtpFechaConclusionIntercambio.ShowCheckBox = true;
-            dtpFechaConclusionIntercambio.Size = new Size(230, 31);
+            dtpFechaConclusionIntercambio.Size = new Size(162, 23);
             dtpFechaConclusionIntercambio.TabIndex = 14;
             // 
             // lblPuntoEncuentroIntercambio
             // 
             lblPuntoEncuentroIntercambio.AutoSize = true;
-            lblPuntoEncuentroIntercambio.Location = new Point(16, 379);
-            lblPuntoEncuentroIntercambio.Margin = new Padding(2, 0, 2, 0);
+            lblPuntoEncuentroIntercambio.Location = new Point(14, 205);
+            lblPuntoEncuentroIntercambio.Margin = new Padding(1, 0, 1, 0);
             lblPuntoEncuentroIntercambio.Name = "lblPuntoEncuentroIntercambio";
-            lblPuntoEncuentroIntercambio.Size = new Size(172, 25);
+            lblPuntoEncuentroIntercambio.Size = new Size(115, 15);
             lblPuntoEncuentroIntercambio.TabIndex = 15;
             lblPuntoEncuentroIntercambio.Text = "Punto de encuentro:";
             // 
             // txtPuntoEncuentroIntercambio
             // 
-            txtPuntoEncuentroIntercambio.Location = new Point(216, 379);
-            txtPuntoEncuentroIntercambio.Margin = new Padding(2);
+            txtPuntoEncuentroIntercambio.Location = new Point(24, 233);
+            txtPuntoEncuentroIntercambio.Margin = new Padding(1, 1, 1, 1);
             txtPuntoEncuentroIntercambio.MaxLength = 200;
             txtPuntoEncuentroIntercambio.Name = "txtPuntoEncuentroIntercambio";
-            txtPuntoEncuentroIntercambio.Size = new Size(374, 31);
+            txtPuntoEncuentroIntercambio.Size = new Size(436, 23);
             txtPuntoEncuentroIntercambio.TabIndex = 16;
             // 
             // FrmIntercambio
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 500);
+            ClientSize = new Size(560, 300);
+            Margin = new Padding(1, 1, 1, 1);
             Name = "FrmIntercambio";
             Text = "FrmIntercambio";
             pnlFormularioBase.ResumeLayout(false);

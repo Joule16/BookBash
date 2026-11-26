@@ -1,9 +1,8 @@
-﻿// SUÑIGA Maciel Joule Alexander
-// VILLA Olivarez Ariel
-// NUÑEZ Martinez Marco Antonio
-// Equipo 2
-// Actividad 2.5 - Estructura lineal Stack<T> (LIFO)
-// ===============================
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
+//   SUÑIGA Maciel Joule Alexander
+//   VILLA Olivarez Ariel
+// =============================
 using SistemaBiblioteca1.Models;
 using System;
 using SistemaBiblioteca1.Datos;
@@ -17,7 +16,7 @@ namespace SistemaBiblioteca1.Models
         private static List<Prestamo> listaPrestamos = new List<Prestamo>();
 
         private List<Ejemplar> _listaEjemplares;
-        
+
         private Stack<string> _historialCambios;
 
         private int idUsuario;
@@ -233,7 +232,6 @@ namespace SistemaBiblioteca1.Models
             fechaDevolucionReal = fecha;
             devuelto = true;
         }
-        //apilar accion
         public void ApilarAccion(string accion)
         {
             if (string.IsNullOrWhiteSpace(accion))
@@ -321,7 +319,7 @@ namespace SistemaBiblioteca1.Models
                 arreglo[i] = copia.Pop();
             }
 
-            return arreglo; 
+            return arreglo;
         }
 
 
@@ -364,6 +362,13 @@ namespace SistemaBiblioteca1.Models
             fechaDevolucionReal = null;
             devuelto = false;
             EsActivo = false;
+        }
+
+        public static List<Prestamo> ObtenerTodos()
+        {
+            List<Prestamo> copia = new List<Prestamo>(listaPrestamos);
+            copia.Sort((a, b) => a.Id.CompareTo(b.Id));
+            return copia;
         }
 
         internal static void CargarDesdeBD(IEnumerable<Prestamo> registros)

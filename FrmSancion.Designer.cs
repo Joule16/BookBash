@@ -1,8 +1,9 @@
-﻿// Actividad 2.4 - Equipo #2
+﻿//   Equipo 2
+//   NUÑEZ Martinez Marco Antonio
 //   SUÑIGA Maciel Joule Alexander
 //   VILLA Olivarez Ariel
-//   NUÑEZ Martinez Marco Antonio
-// ===============================
+// =============================
+// Actividad 2.4
 namespace SistemaBiblioteca1
 {
     partial class FrmSancion
@@ -24,6 +25,7 @@ namespace SistemaBiblioteca1
             chkEstadoSancion = new CheckBox();
             lblMontoSancion = new Label();
             pnlFormularioBase.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).BeginInit();
             SuspendLayout();
             // 
             // pnlFormularioBase
@@ -59,110 +61,110 @@ namespace SistemaBiblioteca1
             // 
             // lblId
             // 
-            lblId.Location = new Point(13, 16);
+            lblId.Location = new Point(11, 12);
             // 
             // txtId
             // 
-            txtId.Location = new Point(224, 11);
+            txtId.Location = new Point(196, 8);
             // 
             // lblIdUsuarioSancion
             // 
             lblIdUsuarioSancion.AutoSize = true;
-            lblIdUsuarioSancion.Location = new Point(16, 60);
+            lblIdUsuarioSancion.Location = new Point(14, 45);
             lblIdUsuarioSancion.Margin = new Padding(2, 0, 2, 0);
             lblIdUsuarioSancion.Name = "lblIdUsuarioSancion";
-            lblIdUsuarioSancion.Size = new Size(81, 20);
+            lblIdUsuarioSancion.Size = new Size(64, 15);
             lblIdUsuarioSancion.TabIndex = 2;
             lblIdUsuarioSancion.Text = "ID Usuario:";
             // 
             // txtIdUsuarioSancion
             // 
-            txtIdUsuarioSancion.Location = new Point(224, 58);
-            txtIdUsuarioSancion.Margin = new Padding(2, 2, 2, 2);
+            txtIdUsuarioSancion.Location = new Point(196, 44);
+            txtIdUsuarioSancion.Margin = new Padding(2);
             txtIdUsuarioSancion.Name = "txtIdUsuarioSancion";
-            txtIdUsuarioSancion.Size = new Size(185, 27);
+            txtIdUsuarioSancion.Size = new Size(162, 23);
             txtIdUsuarioSancion.TabIndex = 3;
             // 
             // lblIdPrestamoSancion
             // 
             lblIdPrestamoSancion.AutoSize = true;
-            lblIdPrestamoSancion.Location = new Point(16, 96);
+            lblIdPrestamoSancion.Location = new Point(16, 90);
             lblIdPrestamoSancion.Margin = new Padding(2, 0, 2, 0);
             lblIdPrestamoSancion.Name = "lblIdPrestamoSancion";
-            lblIdPrestamoSancion.Size = new Size(93, 20);
+            lblIdPrestamoSancion.Size = new Size(74, 15);
             lblIdPrestamoSancion.TabIndex = 4;
             lblIdPrestamoSancion.Text = "ID Préstamo:";
             // 
             // txtIdPrestamoSancion
             // 
-            txtIdPrestamoSancion.Location = new Point(224, 94);
-            txtIdPrestamoSancion.Margin = new Padding(2, 2, 2, 2);
+            txtIdPrestamoSancion.Location = new Point(196, 82);
+            txtIdPrestamoSancion.Margin = new Padding(2);
             txtIdPrestamoSancion.Name = "txtIdPrestamoSancion";
-            txtIdPrestamoSancion.Size = new Size(185, 27);
+            txtIdPrestamoSancion.Size = new Size(162, 23);
             txtIdPrestamoSancion.TabIndex = 5;
             // 
             // lblMotivoSancion
             // 
             lblMotivoSancion.AutoSize = true;
-            lblMotivoSancion.Location = new Point(16, 132);
+            lblMotivoSancion.Location = new Point(14, 124);
             lblMotivoSancion.Margin = new Padding(2, 0, 2, 0);
             lblMotivoSancion.Name = "lblMotivoSancion";
-            lblMotivoSancion.Size = new Size(59, 20);
+            lblMotivoSancion.Size = new Size(48, 15);
             lblMotivoSancion.TabIndex = 6;
             lblMotivoSancion.Text = "Motivo:";
             // 
             // txtMotivoSancion
             // 
-            txtMotivoSancion.Location = new Point(224, 130);
-            txtMotivoSancion.Margin = new Padding(2, 2, 2, 2);
+            txtMotivoSancion.Location = new Point(196, 116);
+            txtMotivoSancion.Margin = new Padding(2);
             txtMotivoSancion.Name = "txtMotivoSancion";
-            txtMotivoSancion.Size = new Size(185, 27);
+            txtMotivoSancion.Size = new Size(162, 23);
             txtMotivoSancion.TabIndex = 7;
             // 
             // lblDiasRetraso
             // 
             lblDiasRetraso.AutoSize = true;
-            lblDiasRetraso.Location = new Point(16, 168);
+            lblDiasRetraso.Location = new Point(14, 161);
             lblDiasRetraso.Margin = new Padding(2, 0, 2, 0);
             lblDiasRetraso.Name = "lblDiasRetraso";
-            lblDiasRetraso.Size = new Size(112, 20);
+            lblDiasRetraso.Size = new Size(87, 15);
             lblDiasRetraso.TabIndex = 8;
             lblDiasRetraso.Text = "Días de retraso:";
             // 
             // txtDiasRetraso
             // 
-            txtDiasRetraso.Location = new Point(224, 166);
-            txtDiasRetraso.Margin = new Padding(2, 2, 2, 2);
+            txtDiasRetraso.Location = new Point(196, 153);
+            txtDiasRetraso.Margin = new Padding(2);
             txtDiasRetraso.Name = "txtDiasRetraso";
-            txtDiasRetraso.Size = new Size(185, 27);
+            txtDiasRetraso.Size = new Size(162, 23);
             txtDiasRetraso.TabIndex = 9;
             // 
             // lblPorcentajePenalizacion
             // 
             lblPorcentajePenalizacion.AutoSize = true;
-            lblPorcentajePenalizacion.Location = new Point(16, 204);
+            lblPorcentajePenalizacion.Location = new Point(11, 202);
             lblPorcentajePenalizacion.Margin = new Padding(2, 0, 2, 0);
             lblPorcentajePenalizacion.Name = "lblPorcentajePenalizacion";
-            lblPorcentajePenalizacion.Size = new Size(184, 20);
+            lblPorcentajePenalizacion.Size = new Size(146, 15);
             lblPorcentajePenalizacion.TabIndex = 10;
             lblPorcentajePenalizacion.Text = "Porcentaje Recargo (0 - 1):";
             // 
             // txtPorcentajePenalizacion
             // 
-            txtPorcentajePenalizacion.Location = new Point(224, 202);
-            txtPorcentajePenalizacion.Margin = new Padding(2, 2, 2, 2);
+            txtPorcentajePenalizacion.Location = new Point(196, 194);
+            txtPorcentajePenalizacion.Margin = new Padding(2);
             txtPorcentajePenalizacion.Name = "txtPorcentajePenalizacion";
             txtPorcentajePenalizacion.PlaceholderText = "0.20";
-            txtPorcentajePenalizacion.Size = new Size(185, 27);
+            txtPorcentajePenalizacion.Size = new Size(162, 23);
             txtPorcentajePenalizacion.TabIndex = 11;
             // 
             // chkPagada
             // 
             chkPagada.AutoSize = true;
-            chkPagada.Location = new Point(224, 240);
-            chkPagada.Margin = new Padding(2, 2, 2, 2);
+            chkPagada.Location = new Point(196, 230);
+            chkPagada.Margin = new Padding(2);
             chkPagada.Name = "chkPagada";
-            chkPagada.Size = new Size(80, 24);
+            chkPagada.Size = new Size(65, 19);
             chkPagada.TabIndex = 12;
             chkPagada.Text = "Pagada";
             chkPagada.UseVisualStyleBackColor = true;
@@ -170,10 +172,10 @@ namespace SistemaBiblioteca1
             // chkEstadoSancion
             // 
             chkEstadoSancion.AutoSize = true;
-            chkEstadoSancion.Location = new Point(320, 240);
-            chkEstadoSancion.Margin = new Padding(2, 2, 2, 2);
+            chkEstadoSancion.Location = new Point(285, 230);
+            chkEstadoSancion.Margin = new Padding(2);
             chkEstadoSancion.Name = "chkEstadoSancion";
-            chkEstadoSancion.Size = new Size(72, 24);
+            chkEstadoSancion.Size = new Size(59, 19);
             chkEstadoSancion.TabIndex = 13;
             chkEstadoSancion.Text = "Activa";
             chkEstadoSancion.UseVisualStyleBackColor = true;
@@ -181,22 +183,23 @@ namespace SistemaBiblioteca1
             // lblMontoSancion
             // 
             lblMontoSancion.AutoSize = true;
-            lblMontoSancion.Location = new Point(16, 280);
+            lblMontoSancion.Location = new Point(14, 234);
             lblMontoSancion.Margin = new Padding(2, 0, 2, 0);
             lblMontoSancion.Name = "lblMontoSancion";
-            lblMontoSancion.Size = new Size(95, 20);
+            lblMontoSancion.Size = new Size(76, 15);
             lblMontoSancion.TabIndex = 14;
             lblMontoSancion.Text = "Monto: $0.00";
             // 
             // FrmSancion
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(640, 360);
+            ClientSize = new Size(560, 270);
             Name = "FrmSancion";
             Text = "FrmSancion";
             pnlFormularioBase.ResumeLayout(false);
             pnlFormularioBase.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)epValidaciones).EndInit();
             ResumeLayout(false);
         }
 
